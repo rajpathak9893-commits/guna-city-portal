@@ -1,0 +1,61 @@
+{% extends "master.html" %}
+
+{% block title %}
+Properties
+{% endblock %}
+
+{% block content %}
+
+<div class="job-card">
+
+    <a href="/properties/{{ property.id }}/">
+
+        <img
+            src="{{ property.image.url }}"
+            width="100%"
+            style="border-radius:15px; margin-bottom:20px;"
+        >
+
+    </a>
+
+    <div class="job-top">
+
+        <h3>
+
+            {{ property.title }}
+
+        </h3>
+
+        <span>
+
+            {{ property.property_type }}
+
+        </span>
+
+    </div>
+
+    <p class="company">
+
+        📍 {{ property.location }}
+
+    </p>
+
+    <div class="job-info">
+
+        <p>
+
+            ₹ {{ property.price }}
+
+        </p>
+
+    </div>
+
+</div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

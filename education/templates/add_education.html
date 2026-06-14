@@ -1,0 +1,192 @@
+{% extends 'master.html' %}
+
+{% block title %}
+Add Education
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.edu-container{
+    max-width:900px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.edu-form-card{
+    background:#fff;
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.form-header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.form-header h2{
+    font-size:32px;
+    color:#2563eb;
+    margin-bottom:10px;
+}
+
+.form-header p{
+    color:#666;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:15px;
+    transition:.3s;
+    box-sizing:border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 8px rgba(37,99,235,.2);
+}
+
+.submit-btn{
+    width:100%;
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:15px;
+    font-size:16px;
+    font-weight:600;
+    border-radius:12px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.submit-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+@media(max-width:768px){
+
+    .row{
+        grid-template-columns:1fr;
+    }
+
+    .edu-form-card{
+        padding:20px;
+    }
+
+}
+
+</style>
+
+<div class="edu-container">
+
+    <div class="edu-form-card">
+
+        <div class="form-header">
+            <h2>🎓 Add Education Listing</h2>
+            <p>Promote your School, College, Coaching or Educational Institute</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Institute Name</label>
+                <input type="text" name="name" required>
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+                    <label>Category</label>
+
+                    <select name="category">
+
+                        <option value="School">School</option>
+
+                        <option value="College">College</option>
+
+                        <option value="Coaching">Coaching</option>
+
+                        <option value="Course">Course</option>
+
+                        <option value="Institute">Institute</option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" required>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Website</label>
+                    <input type="url" name="website">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" name="location" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="6" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Institute Image</label>
+                <input type="file" name="image">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Publish Education Listing
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

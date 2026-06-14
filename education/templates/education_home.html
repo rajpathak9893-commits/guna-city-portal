@@ -1,0 +1,38 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<h1>Education Portal</h1>
+
+<h2>Schools</h2>
+
+{% for school in schools %}
+<div class="card">
+    <h3>{{ school.name }}</h3>
+    <p>{{ school.address }}</p>
+</div>
+{% endfor %}
+
+<hr>
+
+<h2>Colleges</h2>
+
+{% for college in colleges %}
+<div class="card">
+    <h3>{{ college.name }}</h3>
+    <p>{{ college.address }}</p>
+</div>
+{% endfor %}
+
+<hr>
+
+<h2>Coaching Institutes</h2>
+
+{% for coaching in coachings %}
+<div class="card">
+    <h3>{{ coaching.name }}</h3>
+    <p>{{ coaching.category }}</p>
+</div>
+{% endfor %}
+
+{% endblock %}

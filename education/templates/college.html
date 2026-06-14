@@ -1,0 +1,25 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<h1>Colleges</h1>
+
+{% for college in colleges %}
+<div class="card">
+
+    {% if college.image %}
+        <img src="{{ college.image.url }}" width="250">
+    {% endif %}
+
+    <h2>{{ college.name }}</h2>
+
+    <p>{{ college.address }}</p>
+
+    <p>{{ college.contact }}</p>
+
+    <p>{{ college.courses }}</p>
+
+</div>
+{% endfor %}
+
+{% endblock %}

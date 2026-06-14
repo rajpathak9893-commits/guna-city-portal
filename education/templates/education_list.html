@@ -1,0 +1,186 @@
+{% extends 'master.html' %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+.portal{padding:2rem 0 3rem;font-family:'Inter',sans-serif;background:#F0F4FF;min-height:100vh}
+
+.hero{text-align:center;margin-bottom:2rem;padding:2.5rem 2rem;background:#fff;border-radius:20px;border:1px solid #E8EEFF;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:#EEF2FF;border-radius:50%;pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:#F0FDF4;border-radius:50%;pointer-events:none}
+.hero h1{font-size:30px;font-weight:700;color:#1E1B4B;margin-bottom:8px;position:relative}
+.hero h1 span{color:#4F46E5}
+.hero p{font-size:14px;color:#6B7280;position:relative;letter-spacing:.3px}
+
+.search-bar{display:flex;gap:0;margin-bottom:1rem;background:#fff;border:1.5px solid #E0E7FF;border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.search-bar:focus-within{border-color:#4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+.search-bar input{flex:1;padding:12px 14px;border:none;outline:none;font-size:14px;font-family:'Inter',sans-serif;background:transparent;color:#111827}
+.search-bar input::placeholder{color:#9CA3AF}
+
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+.filter-row select{padding:8px 14px;border:1.5px solid #E5E7EB;border-radius:100px;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;background:#fff;color:#374151;outline:none;cursor:pointer}
+.pill{padding:7px 18px;border-radius:100px;font-size:13px;font-weight:500;border:1.5px solid #E5E7EB;background:#fff;color:#6B7280;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s}
+.pill:hover{border-color:#C7D2FE;color:#4F46E5;background:#EEF2FF}
+.pill.active{background:#4F46E5;color:#fff;border-color:#4F46E5}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.stat-card{background:#fff;border-radius:14px;padding:1rem 1.2rem;border:1px solid #E8EEFF;display:flex;align-items:center;gap:12px;transition:transform .18s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.si1{background:#EEF2FF}.si2{background:#DBEAFE}.si3{background:#D1FAE5}.si4{background:#FEF3C7}
+.stat-card .num{font-size:22px;font-weight:700;color:#111827;line-height:1}
+.stat-card .lbl{font-size:11px;color:#9CA3AF;margin-top:3px;letter-spacing:.3px}
+
+.edu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+
+.card{background:#fff;border:1.5px solid #F3F4F6;border-radius:16px;overflow:hidden;transition:transform .22s,border-color .2s,box-shadow .2s;cursor:pointer}
+.card:hover{transform:translateY(-5px);border-color:#C7D2FE;box-shadow:0 10px 30px rgba(79,70,229,.1)}
+
+.card-img-wrap{height:128px;display:flex;align-items:center;justify-content:center;position:relative}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover}
+.card-img{font-size:38px}
+.bg-school{background:linear-gradient(135deg,#EEF2FF,#DBEAFE)}
+.bg-college{background:linear-gradient(135deg,#ECFDF5,#D1FAE5)}
+.bg-coaching{background:linear-gradient(135deg,#FFFBEB,#FEF9C3)}
+.bg-news{background:linear-gradient(135deg,#FDF4FF,#FAE8FF)}
+
+.rating-chip{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.95);border-radius:7px;padding:3px 8px;font-size:11px;font-weight:600;color:#111827}
+
+.card-body{padding:14px}
+.cat-badge{display:inline-block;font-size:10px;padding:3px 9px;border-radius:5px;margin-bottom:8px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.cat-school{background:#EEF2FF;color:#3730A3}
+.cat-college{background:#ECFDF5;color:#065F46}
+.cat-coaching{background:#FFFBEB;color:#92400E}
+.cat-news{background:#FDF4FF;color:#7E22CE}
+
+.card-title{font-size:15px;font-weight:600;color:#111827;margin-bottom:5px}
+.card-loc{font-size:12px;color:#9CA3AF;margin-bottom:6px}
+.card-desc{font-size:12px;color:#6B7280;line-height:1.6;margin-bottom:10px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #F9FAFB;padding-top:10px}
+.view-btn{font-size:12px;font-weight:500;color:#4F46E5;border:1.5px solid #C7D2FE;padding:5px 12px;border-radius:8px;background:#EEF2FF;text-decoration:none;transition:all .15s}
+.view-btn:hover{background:#4F46E5;color:#fff;border-color:#4F46E5}
+
+.empty{text-align:center;padding:3rem;color:#9CA3AF;grid-column:1/-1}
+.result-bar{font-size:13px;color:#6B7280;margin-bottom:1rem;font-weight:500;display:flex;align-items:center;gap:6px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#10B981;display:inline-block}
+</style>
+
+<div class="portal">
+
+  <div class="hero">
+    <h1>🎓 Education <span>Portal</span></h1>
+    <p>Schools &nbsp;·&nbsp; Colleges &nbsp;·&nbsp; Coaching Centers &nbsp;·&nbsp; Education News</p>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search by name, location, or keyword..." oninput="filterCards()">
+  </div>
+
+  <div class="filter-row">
+    <button class="pill active" onclick="setFilter('all',this)">All</button>
+    <button class="pill" onclick="setFilter('school',this)">School</button>
+    <button class="pill" onclick="setFilter('college',this)">College</button>
+    <button class="pill" onclick="setFilter('coaching',this)">Coaching</button>
+    <button class="pill" onclick="setFilter('news',this)">News</button>
+    <select id="locationFilter" onchange="filterCards()" style="margin-left:auto">
+      <option value="">All Locations</option>
+      {% for edu in educations %}
+        <option value="{{ edu.location }}">{{ edu.location }}</option>
+      {% endfor %}
+    </select>
+    <select id="sortFilter" onchange="filterCards()">
+      <option value="default">Sort: Default</option>
+      <option value="name">Name A–Z</option>
+    </select>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-icon si1">📋</div><div><div class="num" id="s-total">{{ educations|length }}</div><div class="lbl">Total Listings</div></div></div>
+    <div class="stat-card"><div class="stat-icon si2">🏫</div><div><div class="num" id="s-school">0</div><div class="lbl">Schools</div></div></div>
+    <div class="stat-card"><div class="stat-icon si3">🎓</div><div><div class="num" id="s-college">0</div><div class="lbl">Colleges</div></div></div>
+    <div class="stat-card"><div class="stat-icon si4">📚</div><div><div class="num" id="s-coaching">0</div><div class="lbl">Coaching</div></div></div>
+  </div>
+
+  <p class="result-bar"><span class="live-dot"></span><span id="result-label">Showing {{ educations|length }} results</span></p>
+
+  <div class="edu-grid" id="cardGrid">
+    {% for education in educations %}
+    <div class="card"
+      data-cat="{{ education.category|lower }}"
+      data-loc="{{ education.location }}"
+      data-name="{{ education.name|lower }}">
+
+      {% if education.image %}
+        <div class="card-img-wrap bg-{{ education.category|lower }}">
+          <img src="{{ education.image.url }}" alt="{{ education.name }}">
+        </div>
+      {% else %}
+        <div class="card-img-wrap bg-{{ education.category|lower }}">
+          <span class="card-img">
+            {% if education.category|lower == "school" %}🏫
+            {% elif education.category|lower == "college" %}🎓
+            {% elif education.category|lower == "coaching" %}📚
+            {% else %}📰{% endif %}
+          </span>
+        </div>
+      {% endif %}
+
+      <div class="card-body">
+        <span class="cat-badge cat-{{ education.category|lower }}">{{ education.category }}</span>
+        <div class="card-title">{{ education.name }}</div>
+        <div class="card-loc">📍 {{ education.location }}</div>
+        <div class="card-desc">{{ education.description|truncatewords:20 }}</div>
+        <div class="card-footer">
+          <span style="font-size:12px;color:#F59E0B">★★★★☆</span>
+          <a href="#" class="view-btn">View details →</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty">
+      <p style="font-size:24px;margin-bottom:8px">📭</p>
+      <p>No education listings found.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+let activeFilter = "all";
+
+function filterCards(){
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const loc = document.getElementById("locationFilter").value;
+  const sort = document.getElementById("sortFilter").value;
+  const cards = [...document.querySelectorAll(".card")];
+  let arr = cards.map(c=>({el:c,name:c.dataset.name||"",cat:c.dataset.cat||"",loc:c.dataset.loc||""}));
+  if(sort==="name") arr.sort((a,b)=>a.name.localeCompare(b.name));
+  arr.forEach(({el})=>document.getElementById("cardGrid").appendChild(el));
+  let vis=0,sc=0,co=0,ch=0;
+  arr.forEach(({el,name,cat,loc:l})=>{
+    const show=(activeFilter==="all"||cat===activeFilter)&&(!loc||l===loc)&&(!q||name.includes(q)||l.toLowerCase().includes(q));
+    el.style.display=show?"":"none";
+    if(show){vis++;if(cat==="school")sc++;if(cat==="college")co++;if(cat==="coaching")ch++;}
+  });
+  document.getElementById("result-label").textContent=`Showing ${vis} results`;
+  document.getElementById("s-total").textContent=vis;
+  document.getElementById("s-school").textContent=sc;
+  document.getElementById("s-college").textContent=co;
+  document.getElementById("s-coaching").textContent=ch;
+  const g=document.getElementById("cardGrid");
+  const em=g.querySelector(".empty-msg");
+  if(vis===0){if(!em){const d=document.createElement("div");d.className="empty empty-msg";d.innerHTML="<p>No results found.</p>";g.appendChild(d);}}else{if(em)em.remove();}
+}
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+  filterCards();
+}
+filterCards();
+</script>
+
+{% endblock %}

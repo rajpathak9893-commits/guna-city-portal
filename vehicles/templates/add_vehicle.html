@@ -1,0 +1,172 @@
+{% extends 'master.html' %}
+{% block title %}Add Vehicle{% endblock %}
+
+{% block content %}
+<style>
+.add-wrap {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #1e293b;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(56,189,248,0.1);
+}
+
+.add-wrap h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.add-wrap p {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 28px;
+}
+
+.add-wrap label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    margin-top: 16px;
+}
+
+.add-wrap input,
+.add-wrap select,
+.add-wrap textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: #0f172a;
+    border: 1.5px solid #334155;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.add-wrap input:focus,
+.add-wrap textarea:focus {
+    border-color: #38bdf8;
+}
+
+.add-wrap textarea { resize: vertical; min-height: 100px; }
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 24px 0 8px;
+}
+
+.contact-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(56,189,248,0.08);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #7dd3fc;
+    margin-bottom: 4px;
+}
+
+.submit-btn {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    background: #38bdf8;
+    border: none;
+    border-radius: 12px;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+}
+
+.submit-btn:hover { background: #7dd3fc; }
+</style>
+
+<div class="add-wrap">
+    <h2>🚗 Add Vehicle</h2>
+    <p>Fill in the details below to list your vehicle</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>Vehicle Title</label>
+        <input type="text" name="title" placeholder="e.g. Honda City 2020" required>
+
+        <div class="two-col">
+            <div>
+                <label>Brand</label>
+                <input type="text" name="brand" placeholder="e.g. Honda" required>
+            </div>
+            <div>
+                <label>Model</label>
+                <input type="text" name="model" placeholder="e.g. City ZX" required>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <label>Year</label>
+                <input type="number" name="year" placeholder="e.g. 2020" required>
+            </div>
+            <div>
+                <label>Price</label>
+                <input type="text" name="price" placeholder="e.g. ₹5,50,000" required>
+            </div>
+        </div>
+
+        <label>Location</label>
+        <input type="text" name="location" placeholder="e.g. Guna, Madhya Pradesh" required>
+
+        <label>Description</label>
+        <textarea name="description" placeholder="Vehicle condition, features..."></textarea>
+
+        <label>Vehicle Image</label>
+        <input type="file" name="image">
+
+        <!-- Contact Section -->
+        <hr class="divider">
+
+        <div class="contact-note">
+            📋 Contact details pre-filled from your profile — change if needed
+        </div>
+
+        <label>📱 Contact Number</label>
+        <input
+            type="tel"
+            name="phone"
+            placeholder="e.g. 9876543210"
+            value="{{ profile.phone }}"
+        >
+
+        <label>📍 Address</label>
+        <textarea
+            name="address"
+            placeholder="e.g. Ward No. 5, Near Bus Stand, Guna"
+        >{{ profile.address }}</textarea>
+
+        <button type="submit" class="submit-btn">
+            List Vehicle →
+        </button>
+    </form>
+</div>
+
+{% endblock %}

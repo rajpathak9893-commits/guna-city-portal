@@ -1,0 +1,27 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<h1>Coaching Institutes</h1>
+
+{% for coaching in coachings %}
+<div class="card">
+
+    {% if coaching.image %}
+        <img src="{{ coaching.image.url }}" width="250">
+    {% endif %}
+
+    <h2>{{ coaching.name }}</h2>
+
+    <p>{{ coaching.category }}</p>
+
+    <p>{{ coaching.address }}</p>
+
+    <p>{{ coaching.contact }}</p>
+
+    <p>{{ coaching.description }}</p>
+
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,1481 @@
+{% extends 'master.html' %}
+{% block title %}Home – ApnaGuna Pro{% endblock %}
+{% block nav_home %}active{% endblock %}
+{% block mob_home %}active{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS  —  Soft Coral · Blush · Deep Slate
+══════════════════════════════════════════════════ */
+:root {
+  /* backgrounds */
+  --bg:          #FBF8F5;      /* warm off-white */
+  --bg2:         #F5F0EB;      /* slightly deeper warm */
+  --surface:     #FFFFFF;
+
+  /* coral family */
+  --coral:       #E8634A;
+  --coral2:      #F07A62;
+  --coral-light: #FDF0EC;
+  --coral-mid:   rgba(232,99,74,0.12);
+  --coral-border:rgba(232,99,74,0.22);
+
+  /* slate family */
+  --slate:       #2B3A52;
+  --slate2:      #3D5275;
+  --slate-light: #EEF1F7;
+
+  /* sage accent */
+  --sage:        #4A8C6F;
+  --sage-light:  #E8F4EF;
+
+  /* amber accent */
+  --amber:       #D4831A;
+  --amber-light: #FEF4E5;
+
+  /* violet accent */
+  --violet:      #6B4FC8;
+  --violet-light:#F0ECFC;
+
+  /* text */
+  --txt-1:       #1E2A3A;
+  --txt-2:       #4A5873;
+  --txt-3:       #8B97AD;
+
+  /* borders & shadows */
+  --border:      #E8E0D5;
+  --border2:     #D8CFC3;
+  --shadow-xs:   0 2px 8px rgba(43,58,82,0.06);
+  --shadow-sm:   0 4px 18px rgba(43,58,82,0.09);
+  --shadow-md:   0 8px 36px rgba(43,58,82,0.12);
+  --shadow-lg:   0 20px 60px rgba(43,58,82,0.16);
+
+  --radius:      18px;
+  --radius-sm:   12px;
+  --radius-xs:   8px;
+
+  --font-display:'Cormorant Garamond', Georgia, serif;
+  --font-body:   'Nunito', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--txt-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes shimmerSlide {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,99,74,0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(232,99,74,0); }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  background: linear-gradient(145deg, #FBF8F5 0%, #F5EFE8 50%, #FCEEE8 100%);
+  padding: 72px 60px 64px;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+}
+
+/* decorative blobs */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -60px;
+  width: 460px; height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,99,74,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: 30%;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,140,111,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-floating-ring {
+  position: absolute;
+  top: 60px; right: 100px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  border: 2px dashed rgba(232,99,74,0.18);
+  animation: spinSlow 20s linear infinite;
+  pointer-events: none;
+}
+
+.hero-floating-ring::after {
+  content: '';
+  position: absolute;
+  top: 14px; left: 14px; right: 14px; bottom: 14px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(212,131,26,0.14);
+}
+
+.hero-dot-grid {
+  position: absolute;
+  bottom: 24px; right: 60px;
+  width: 120px; height: 80px;
+  background-image: radial-gradient(circle, rgba(43,58,82,0.10) 1px, transparent 1px);
+  background-size: 12px 12px;
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--surface);
+  border: 1.5px solid var(--coral-border);
+  padding: 9px 18px;
+  border-radius: 100px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-xs);
+  animation: fadeUp 0.6s ease both;
+}
+
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 68px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  color: var(--txt-1);
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--coral);
+  display: block;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--txt-2);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  font-weight: 500;
+  animation: fadeUp 0.6s ease 0.2s both;
+  max-width: 520px;
+}
+
+/* SEARCH BAR */
+.hero-search {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 36px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+.hero-search:focus-within {
+  border-color: var(--coral2);
+  box-shadow: 0 8px 40px rgba(232,99,74,0.18);
+}
+
+.search-icon-wrap {
+  padding: 0 18px;
+  color: var(--txt-3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.hero-search input {
+  flex: 1;
+  border: none; outline: none;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--txt-1);
+  padding: 17px 0;
+  background: transparent;
+  font-weight: 500;
+}
+.hero-search input::placeholder { color: var(--txt-3); }
+
+.search-divider {
+  width: 1px; height: 28px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.hero-search select {
+  border: none; outline: none;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--txt-2);
+  background: transparent;
+  padding: 17px 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.search-btn {
+  background: var(--coral);
+  color: #fff;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 0 26px;
+  height: 100%;
+  min-height: 56px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+.search-btn:hover { background: var(--coral2); }
+.search-btn:active { transform: scale(0.98); }
+
+/* HERO STATS */
+.hero-stats {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.4s both;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--txt-1);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.stat-num em {
+  font-style: normal;
+  color: var(--coral);
+  font-size: 22px;
+}
+
+.stat-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--txt-3);
+  letter-spacing: 0.3px;
+}
+
+.stat-sep {
+  width: 1px; height: 38px;
+  background: var(--border2);
+  align-self: center;
+}
+
+/* ══════════════════════════════════════════════════
+   TRUST BAR
+══════════════════════════════════════════════════ */
+.trust-bar {
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  padding: 14px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--txt-2);
+}
+
+.trust-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════
+   PAGE WRAPPER
+══════════════════════════════════════════════════ */
+.page-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 52px;
+}
+
+/* ══════════════════════════════════════════════════
+   SECTION HEADER
+══════════════════════════════════════════════════ */
+.sec-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-top: 52px;
+  gap: 16px;
+}
+
+.sec-head-left {}
+
+.sec-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sec-kicker::before {
+  content: '';
+  display: block;
+  width: 20px; height: 2px;
+  background: var(--coral);
+  border-radius: 2px;
+}
+
+.sec-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--txt-1);
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+}
+
+.sec-see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--coral);
+  text-decoration: none;
+  background: var(--coral-light);
+  border: 1.5px solid var(--coral-border);
+  padding: 9px 18px;
+  border-radius: 100px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sec-see-all:hover {
+  background: var(--coral);
+  color: #fff;
+  border-color: var(--coral);
+  box-shadow: 0 4px 16px rgba(232,99,74,0.30);
+}
+
+/* ══════════════════════════════════════════════════
+   CATEGORY GRID
+══════════════════════════════════════════════════ */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+
+.cat-tile {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 16px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.26s ease;
+  box-shadow: var(--shadow-xs);
+  animation: fadeUp 0.5s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.cat-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--coral-light);
+  opacity: 0;
+  transition: opacity 0.26s;
+  z-index: 0;
+}
+
+.cat-tile > * { position: relative; z-index: 1; }
+
+.cat-tile:hover {
+  border-color: var(--coral-border);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+.cat-tile:hover::after { opacity: 1; }
+
+.cat-tile:nth-child(1) { animation-delay: 0.04s; }
+.cat-tile:nth-child(2) { animation-delay: 0.08s; }
+.cat-tile:nth-child(3) { animation-delay: 0.12s; }
+.cat-tile:nth-child(4) { animation-delay: 0.16s; }
+.cat-tile:nth-child(5) { animation-delay: 0.20s; }
+.cat-tile:nth-child(6) { animation-delay: 0.24s; }
+
+.cat-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 25px;
+  transition: transform 0.26s;
+  box-shadow: var(--shadow-xs);
+}
+.cat-tile:hover .cat-icon { transform: scale(1.14) rotate(-5deg); }
+
+.cat-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--txt-1);
+  text-align: center;
+}
+
+.cat-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--txt-3);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 3px 11px;
+  border-radius: 100px;
+}
+
+/* ══════════════════════════════════════════════════
+   AD BANNER
+══════════════════════════════════════════════════ */
+.ad-slot {
+  margin: 40px 0;
+  min-height: 88px;
+  background: var(--surface);
+  border: 1.5px dashed var(--border2);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--txt-3);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════════
+   JOBS LIST
+══════════════════════════════════════════════════ */
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.job-row {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.24s ease;
+  box-shadow: var(--shadow-xs);
+  animation: fadeUp 0.5s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.job-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--coral) 0%, var(--coral2) 100%);
+  transform: scaleY(0);
+  transition: transform 0.26s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+.job-row:hover {
+  border-color: var(--coral-border);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(6px);
+}
+.job-row:hover::before { transform: scaleY(1); }
+
+.job-logo {
+  width: 54px; height: 54px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border);
+  font-size: 24px;
+}
+
+.job-info { flex: 1; min-width: 0; }
+
+.job-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--txt-1);
+  margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.job-company {
+  font-size: 12.5px;
+  color: var(--txt-3);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.job-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.jtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--txt-2);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  padding: 4px 11px;
+  border-radius: 100px;
+}
+
+.jtag-full   { background: var(--slate-light); color: var(--slate2); border-color: rgba(61,82,117,0.22); }
+.jtag-remote { background: var(--sage-light);  color: var(--sage);   border-color: rgba(74,140,111,0.22); }
+.jtag-part   { background: var(--amber-light); color: var(--amber);  border-color: rgba(212,131,26,0.22); }
+
+.apply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 22px;
+  background: var(--slate);
+  color: #fff;
+  border: 2px solid var(--slate);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.22s;
+  letter-spacing: 0.2px;
+}
+.apply-btn:hover {
+  background: var(--coral);
+  border-color: var(--coral);
+  box-shadow: 0 4px 18px rgba(232,99,74,0.32);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════════
+   PROPERTY CARDS
+══════════════════════════════════════════════════ */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.prop-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.26s ease;
+  box-shadow: var(--shadow-xs);
+  animation: fadeUp 0.5s ease both;
+}
+.prop-card:hover {
+  transform: translateY(-7px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--coral-border);
+}
+
+.prop-thumb {
+  height: 175px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* shimmer overlay on thumb */
+.prop-thumb::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+  background-size: 200%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.prop-card:hover .prop-thumb::after {
+  opacity: 1;
+  animation: shimmerSlide 1s ease;
+}
+
+.prop-badge {
+  position: absolute;
+  top: 13px; left: 13px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 11px;
+  border-radius: 100px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.badge-hot    { background: #FEE2E2; color: #C0392B; border: 1px solid #FECACA; }
+.badge-new    { background: var(--sage-light); color: var(--sage); border: 1px solid rgba(74,140,111,0.25); }
+.badge-urgent { background: var(--amber-light); color: var(--amber); border: 1px solid rgba(212,131,26,0.25); }
+
+.prop-fav {
+  position: absolute;
+  top: 11px; right: 11px;
+  width: 33px; height: 33px;
+  background: rgba(255,255,255,0.90);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--txt-3);
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.70);
+  backdrop-filter: blur(6px);
+  transition: all 0.2s;
+}
+.prop-fav:hover { color: var(--coral); background: #fff; }
+
+.prop-body { padding: 18px 20px 20px; }
+
+.prop-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--txt-1);
+  margin-bottom: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.prop-loc {
+  font-size: 12.5px;
+  color: var(--txt-3);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.prop-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prop-price {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--sage);
+}
+
+.prop-type-tag {
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 5px 13px;
+  border-radius: 100px;
+  background: var(--slate);
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+/* ══════════════════════════════════════════════════
+   HOW IT WORKS
+══════════════════════════════════════════════════ */
+.hiw-section {
+  margin-top: 60px;
+  background: linear-gradient(135deg, var(--slate) 0%, var(--slate2) 100%);
+  border-radius: 28px;
+  padding: 52px 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hiw-section::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,99,74,0.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hiw-section::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -40px;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hiw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.hiw-title-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--coral2);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hiw-title-kicker::before {
+  content: '';
+  display: block;
+  width: 20px; height: 2px;
+  background: var(--coral2);
+  border-radius: 2px;
+}
+
+.hiw-title {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.hiw-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* connector line between steps */
+.hiw-grid::before {
+  content: '';
+  position: absolute;
+  top: 44px;
+  left: calc(12.5% + 10px);
+  right: calc(12.5% + 10px);
+  height: 1.5px;
+  background: repeating-linear-gradient(90deg, rgba(232,99,74,0.40) 0, rgba(232,99,74,0.40) 6px, transparent 6px, transparent 14px);
+  z-index: 0;
+}
+
+.hiw-step {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 30px 22px 26px;
+  text-align: center;
+  transition: all 0.26s ease;
+  animation: fadeUp 0.6s ease both;
+  position: relative;
+  z-index: 1;
+}
+
+.hiw-step:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(232,99,74,0.45);
+  transform: translateY(-5px);
+}
+
+.hiw-step:nth-child(1) { animation-delay: 0.05s; }
+.hiw-step:nth-child(2) { animation-delay: 0.12s; }
+.hiw-step:nth-child(3) { animation-delay: 0.19s; }
+.hiw-step:nth-child(4) { animation-delay: 0.26s; }
+
+.step-emoji {
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  background: rgba(232,99,74,0.15);
+  border: 1px solid rgba(232,99,74,0.28);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 18px;
+}
+
+.step-num {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--coral2);
+  margin-bottom: 7px;
+}
+
+.step-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 9px;
+}
+
+.step-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.52);
+  line-height: 1.65;
+}
+
+/* ══════════════════════════════════════════════════
+   CTA BANNER
+══════════════════════════════════════════════════ */
+.cta-section {
+  margin: 48px 0 72px;
+  background: linear-gradient(135deg, var(--coral-light) 0%, #FDEEE8 40%, #FEF5EC 100%);
+  border: 2px solid var(--coral-border);
+  border-radius: 28px;
+  padding: 52px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '₹';
+  position: absolute;
+  right: 200px; top: -32px;
+  font-family: var(--font-display);
+  font-size: 200px;
+  font-weight: 700;
+  color: rgba(232,99,74,0.06);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.cta-section::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; left: -30px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,99,74,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.cta-eyebrow::before {
+  content: '';
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--coral);
+  border-radius: 2px;
+}
+
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--txt-1);
+  margin-bottom: 12px;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+}
+
+.cta-section p {
+  font-size: 15px;
+  color: var(--txt-2);
+  line-height: 1.65;
+  max-width: 480px;
+  font-weight: 500;
+}
+
+.cta-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 1;
+  position: relative;
+}
+
+.cta-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 34px;
+  background: var(--coral);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  border-radius: 14px;
+  white-space: nowrap;
+  transition: all 0.22s;
+  box-shadow: 0 6px 24px rgba(232,99,74,0.35);
+  letter-spacing: 0.2px;
+}
+.cta-btn-primary:hover {
+  background: var(--coral2);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 32px rgba(232,99,74,0.45);
+}
+
+.cta-note {
+  font-size: 12px;
+  color: var(--txt-3);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ══════════════════════════════════════════════════
+   TRUST BAR (BOTTOM)
+══════════════════════════════════════════════════ */
+.trust-bottom {
+  background: var(--surface);
+  border-top: 1.5px solid var(--border);
+  border-bottom: 1.5px solid var(--border);
+  padding: 18px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 44px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+/* ══════════════════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #DDD5C8; border-radius: 10px; }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .hiw-grid { grid-template-columns: repeat(2, 1fr); }
+  .hiw-grid::before { display: none; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 48px 24px 48px; }
+  .hero h1 { font-size: 46px; }
+  .hero-search { flex-wrap: wrap; border-radius: 14px; }
+  .search-btn { width: 100%; justify-content: center; min-height: 50px; border-radius: 0 0 12px 12px; }
+  .search-divider { display: none; }
+  .hero-stats { gap: 16px; }
+  .stat-sep { display: none; }
+  .page-wrap { padding: 0 20px; }
+  .trust-bar, .trust-bottom { padding: 14px 20px; gap: 18px; }
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cat-tile { padding: 18px 10px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .hiw-section { padding: 32px 24px; }
+  .hiw-grid { grid-template-columns: 1fr 1fr; }
+  .cta-section { flex-direction: column; padding: 36px 28px; }
+  .cta-section h2 { font-size: 26px; }
+  .cta-section::before { display: none; }
+  .job-row { flex-wrap: wrap; }
+  .apply-btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .hiw-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 38px; }
+}
+
+</style>
+{% endblock %}
+
+{# ===== HERO ===== #}
+{% block hero %}
+
+<section class="hero">
+  <div class="hero-floating-ring"></div>
+  <div class="hero-dot-grid"></div>
+
+  <div class="hero-inner">
+    <div class="hero-pill">
+      <div class="pulse-dot"></div>
+      🔥 India's Smartest Local Marketplace
+    </div>
+
+    <h1>
+      Your City's Best<br>
+      <em>Jobs, Homes &amp; Deals</em>
+    </h1>
+
+    <p class="hero-desc">
+      Thousands of verified listings updated daily.<br>
+      Buy, sell, rent and hire — right in your neighbourhood.
+    </p>
+
+    <div class="hero-search">
+      <div class="search-icon-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <input type="text" placeholder="Search jobs, properties, vehicles…">
+      <div class="search-divider"></div>
+      <select>
+        <option>All Categories</option>
+        <option>Jobs</option>
+        <option>Properties</option>
+        <option>Vehicles</option>
+        <option>Services</option>
+      </select>
+      <button class="search-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search
+      </button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">12,400<em>+</em></div>
+        <div class="stat-lbl">Active Listings</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <div class="stat-num">3,200<em>+</em></div>
+        <div class="stat-lbl">Jobs Posted</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <div class="stat-num">8,600<em>+</em></div>
+        <div class="stat-lbl">Happy Users</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <div class="stat-num">220<em>+</em></div>
+        <div class="stat-lbl">Cities</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">
+    <div class="trust-icon" style="background:#E8F4EF;color:#4A8C6F">✓</div>
+    100% Verified Listings
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--slate-light);color:var(--slate)">🔒</div>
+    Safe &amp; Secure
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--amber-light);color:var(--amber)">⏰</div>
+    24/7 Support
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--coral-light);color:var(--coral)">★</div>
+    4.9 Star Rating
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--violet-light);color:var(--violet)">₹</div>
+    Free to Post
+  </div>
+</div>
+
+{% endblock %}
+
+{# ===== CONTENT ===== #}
+{% block content %}
+<div class="page-wrap">
+
+  <!-- ══ CATEGORIES ══ -->
+  <div class="sec-head">
+    <div class="sec-head-left">
+      <div class="sec-kicker">Browse</div>
+      <div class="sec-title">Trending Categories</div>
+    </div>
+    <a href="/categories/" class="sec-see-all">
+      All Categories
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
+  <div class="cat-grid">
+    <a href="/jobs/" class="cat-tile">
+      <div class="cat-icon" style="background:var(--slate-light);color:var(--slate2)">💼</div>
+      <div class="cat-name">Jobs</div>
+      <div class="cat-count">1,240 listings</div>
+    </a>
+    <a href="/properties/" class="cat-tile">
+      <div class="cat-icon" style="background:var(--sage-light);color:var(--sage)">🏠</div>
+      <div class="cat-name">Real Estate</div>
+      <div class="cat-count">890 listings</div>
+    </a>
+    <a href="/services/" class="cat-tile">
+      <div class="cat-icon" style="background:var(--amber-light);color:var(--amber)">🔧</div>
+      <div class="cat-name">Services</div>
+      <div class="cat-count">640 listings</div>
+    </a>
+    <a href="/vehicles/" class="cat-tile">
+      <div class="cat-icon" style="background:var(--coral-light);color:var(--coral)">🚗</div>
+      <div class="cat-name">Vehicles</div>
+      <div class="cat-count">520 listings</div>
+    </a>
+    <a href="/education/" class="cat-tile">
+      <div class="cat-icon" style="background:#DCFCE7;color:#16A34A">🎓</div>
+      <div class="cat-name">Education</div>
+      <div class="cat-count">310 listings</div>
+    </a>
+    <a href="/offers/" class="cat-tile">
+      <div class="cat-icon" style="background:var(--violet-light);color:var(--violet)">🎁</div>
+      <div class="cat-name">Offers</div>
+      <div class="cat-count">180 listings</div>
+    </a>
+  </div>
+
+  <!-- AD SLOT 1 -->
+  <div class="ad-slot">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+    Advertisement
+  </div>
+
+  <!-- ══ FEATURED JOBS ══ -->
+  <div class="sec-head" style="padding-top:0">
+    <div class="sec-head-left">
+      <div class="sec-kicker">Hiring Now</div>
+      <div class="sec-title">Featured Jobs</div>
+    </div>
+    <a href="/jobs/" class="sec-see-all">
+      View All Jobs
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
+  <div class="jobs-list">
+    {% for job in jobs %}
+    <div class="job-row" style="animation-delay:{{ forloop.counter0|add:'0' }}s">
+      <div class="job-logo" style="background:var(--slate-light)">💼</div>
+      <div class="job-info">
+        <div class="job-title">{{ job.title }}</div>
+        <div class="job-company">{{ job.company }}</div>
+        <div class="job-tags">
+          <span class="jtag">📍 {{ job.location }}</span>
+          <span class="jtag">₹ {{ job.salary }}</span>
+          <span class="jtag jtag-{{ job.type_class }}">{{ job.job_type }}</span>
+        </div>
+      </div>
+      <a href="/jobs/{{ job.id }}/" class="apply-btn">Apply Now →</a>
+    </div>
+    {% empty %}
+    <div class="job-row">
+      <div class="job-logo" style="background:var(--slate-light)">💻</div>
+      <div class="job-info">
+        <div class="job-title">Python Django Developer</div>
+        <div class="job-company">Tech Solutions Pvt Ltd</div>
+        <div class="job-tags">
+          <span class="jtag">📍 Guna, MP</span>
+          <span class="jtag">₹ 25,000/mo</span>
+          <span class="jtag jtag-full">Full Time</span>
+        </div>
+      </div>
+      <a href="/jobs/1/" class="apply-btn">Apply Now →</a>
+    </div>
+    <div class="job-row" style="animation-delay:0.08s">
+      <div class="job-logo" style="background:var(--sage-light)">🖥️</div>
+      <div class="job-info">
+        <div class="job-title">Frontend Developer (React)</div>
+        <div class="job-company">WebX Company</div>
+        <div class="job-tags">
+          <span class="jtag">📍 Remote</span>
+          <span class="jtag">₹ 30,000/mo</span>
+          <span class="jtag jtag-remote">Remote</span>
+        </div>
+      </div>
+      <a href="/jobs/2/" class="apply-btn">Apply Now →</a>
+    </div>
+    <div class="job-row" style="animation-delay:0.16s">
+      <div class="job-logo" style="background:var(--amber-light)">📣</div>
+      <div class="job-info">
+        <div class="job-title">Digital Marketing Expert</div>
+        <div class="job-company">ApnaGuna Media</div>
+        <div class="job-tags">
+          <span class="jtag">📍 Bhopal</span>
+          <span class="jtag">₹ 18,000/mo</span>
+          <span class="jtag jtag-part">Part Time</span>
+        </div>
+      </div>
+      <a href="/jobs/3/" class="apply-btn">Apply Now →</a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- AD SLOT 2 -->
+  <div class="ad-slot">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+    Advertisement
+  </div>
+
+  <!-- ══ LATEST PROPERTIES ══ -->
+  <div class="sec-head" style="padding-top:0">
+    <div class="sec-head-left">
+      <div class="sec-kicker">Real Estate</div>
+      <div class="sec-title">Latest Properties</div>
+    </div>
+    <a href="/properties/" class="sec-see-all">
+      View All
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
+  <div class="cards-grid">
+    {% for prop in properties %}
+    <div class="prop-card">
+      <div class="prop-thumb" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE)">
+        🏠
+        <div class="prop-badge badge-hot">Hot</div>
+        <button class="prop-fav">♡</button>
+      </div>
+      <div class="prop-body">
+        <div class="prop-title">{{ prop.title }}</div>
+        <div class="prop-loc">📍 {{ prop.location }}</div>
+        <div class="prop-footer">
+          <div class="prop-price">{{ prop.price }}</div>
+          <div class="prop-type-tag">{{ prop.listing_type }}</div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="prop-card" style="animation-delay:0.04s">
+      <div class="prop-thumb" style="background:linear-gradient(135deg,#DBEAFE,#C7D2FE)">
+        🏠
+        <div class="prop-badge badge-hot">Hot</div>
+        <button class="prop-fav">♡</button>
+      </div>
+      <div class="prop-body">
+        <div class="prop-title">3 BHK Flat in Arera Colony</div>
+        <div class="prop-loc">📍 Arera Colony, Bhopal</div>
+        <div class="prop-footer">
+          <div class="prop-price">₹65 Lakh</div>
+          <div class="prop-type-tag">For Sale</div>
+        </div>
+      </div>
+    </div>
+    <div class="prop-card" style="animation-delay:0.09s">
+      <div class="prop-thumb" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">
+        🏡
+        <div class="prop-badge badge-new">New</div>
+        <button class="prop-fav">♡</button>
+      </div>
+      <div class="prop-body">
+        <div class="prop-title">2 BHK Apartment – Guna City</div>
+        <div class="prop-loc">📍 Civil Lines, Guna</div>
+        <div class="prop-footer">
+          <div class="prop-price">₹8,500/mo</div>
+          <div class="prop-type-tag">For Rent</div>
+        </div>
+      </div>
+    </div>
+    <div class="prop-card" style="animation-delay:0.14s">
+      <div class="prop-thumb" style="background:linear-gradient(135deg,var(--amber-light),#FDDCB5)">
+        🏢
+        <div class="prop-badge badge-urgent">Urgent</div>
+        <button class="prop-fav">♡</button>
+      </div>
+      <div class="prop-body">
+        <div class="prop-title">Commercial Shop – MP Nagar</div>
+        <div class="prop-loc">📍 MP Nagar, Bhopal</div>
+        <div class="prop-footer">
+          <div class="prop-price">₹45 Lakh</div>
+          <div class="prop-type-tag">For Sale</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <div class="hiw-section">
+    <div class="hiw-header">
+      <div>
+        <div class="hiw-title-kicker">Simple Process</div>
+        <div class="hiw-title">How ApnaGuna Works</div>
+      </div>
+    </div>
+    <div class="hiw-grid">
+      <div class="hiw-step">
+        <div class="step-emoji">📝</div>
+        <div class="step-num">Step 01</div>
+        <div class="step-title">Post Your Ad</div>
+        <div class="step-desc">Create a free listing in minutes. Add photos, price &amp; description.</div>
+      </div>
+      <div class="hiw-step">
+        <div class="step-emoji">🔍</div>
+        <div class="step-num">Step 02</div>
+        <div class="step-title">Get Discovered</div>
+        <div class="step-desc">Thousands of buyers and job seekers will find your listing.</div>
+      </div>
+      <div class="hiw-step">
+        <div class="step-emoji">💬</div>
+        <div class="step-num">Step 03</div>
+        <div class="step-title">Connect Directly</div>
+        <div class="step-desc">Chat and negotiate directly — no middlemen, no commission.</div>
+      </div>
+      <div class="hiw-step">
+        <div class="step-emoji">✅</div>
+        <div class="step-num">Step 04</div>
+        <div class="step-title">Close the Deal</div>
+        <div class="step-desc">Meet, finalize and done. Simple, fast, reliable.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CTA BANNER ══ -->
+  <div class="cta-section">
+    <div style="position:relative;z-index:1">
+      <div class="cta-eyebrow">Start Today</div>
+      <h2>Got something to sell<br>or a job to post?</h2>
+      <p>Post your ad for free and reach thousands of buyers in your city — no commission, no hassle, no middlemen.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="{% if user.is_authenticated %}/jobs/add/{% else %}/accounts/login/{% endif %}" class="cta-btn-primary">
+        + Post Free Ad Today
+      </a>
+      <div class="cta-note">
+        ✓ Free forever &nbsp;·&nbsp; ✓ No credit card
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<!-- BOTTOM TRUST BAR -->
+<div class="trust-bottom">
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--sage-light);color:var(--sage)">✓</div>
+    Verified Sellers
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--coral-light);color:var(--coral)">🔒</div>
+    Secure Platform
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--amber-light);color:var(--amber)">🏆</div>
+    Trusted by 8,600+ Users
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--slate-light);color:var(--slate)">📞</div>
+    24/7 Customer Support
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" style="background:var(--violet-light);color:var(--violet)">🇮🇳</div>
+    Made in India
+  </div>
+</div>
+
+{% endblock %}

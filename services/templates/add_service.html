@@ -1,0 +1,186 @@
+{% extends 'master.html' %}
+{% block title %}Add Service{% endblock %}
+
+{% block content %}
+<style>
+.wrap {
+  max-width: 750px;
+  margin: 40px auto;
+  background: #1e293b;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 0 30px rgba(56,189,248,.1);
+}
+.wrap h2 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.wrap > p { color: #94a3b8; margin-bottom: 28px; }
+
+.wrap label {
+  display: block;
+  color: #cbd5e1;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wrap input,
+.wrap select,
+.wrap textarea {
+  width: 100%;
+  padding: 13px 15px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  color: #fff;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+.wrap input:focus,
+.wrap select:focus,
+.wrap textarea:focus { border-color: #38bdf8; }
+
+.wrap textarea { min-height: 110px; resize: vertical; }
+
+.divider {
+  border: none;
+  border-top: 1px solid #334155;
+  margin: 24px 0;
+}
+
+.note {
+  background: rgba(56,189,248,.08);
+  border: 1px solid rgba(56,189,248,.2);
+  color: #7dd3fc;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 28px;
+  border: none;
+  border-radius: 12px;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.submit-btn:hover { background: #7dd3fc; transform: translateY(-2px); }
+
+@media (max-width: 600px) {
+  .wrap { padding: 24px 16px; }
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+  <h2>🛠️ Add Your Service</h2>
+  <p>Apni service list karo aur customers tak pahuncho.</p>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Basic Info -->
+    <label>Your Name / Business Name</label>
+    <input type="text" name="name" placeholder="e.g. Ramesh Plumbing Services" required>
+
+    <label>Category</label>
+    <select name="category" required>
+      <option value="">Select Category</option>
+      <optgroup label="🔧 Local Services">
+        <option value="Plumber">Plumber</option>
+        <option value="Electrician">Electrician</option>
+        <option value="Carpenter">Carpenter</option>
+        <option value="Painter">Painter</option>
+        <option value="Mechanic">Mechanic</option>
+        <option value="Cleaner">Cleaner</option>
+        <option value="Driver">Driver</option>
+        <option value="Security">Security Guard</option>
+      </optgroup>
+      <optgroup label="💼 Professional Services">
+        <option value="Tutor">Tutor / Teacher</option>
+        <option value="Doctor">Doctor</option>
+        <option value="Lawyer">Lawyer</option>
+        <option value="CA">CA / Accountant</option>
+        <option value="Designer">Graphic Designer</option>
+        <option value="Developer">Web / App Developer</option>
+        <option value="Photographer">Photographer</option>
+        <option value="Other">Other</option>
+      </optgroup>
+    </select>
+
+    <div class="two-col">
+      <div>
+        <label>Location</label>
+        <input type="text" name="location" placeholder="e.g. Guna, MP" required>
+      </div>
+      <div>
+        <label>Price / Charges</label>
+        <input type="text" name="price" placeholder="e.g. ₹500/visit" required>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <label>Experience</label>
+        <input type="text" name="experience" placeholder="e.g. 5+ Years">
+      </div>
+      <div>
+        <label>Timing</label>
+        <input type="text" name="timing" placeholder="e.g. 9am - 6pm">
+      </div>
+    </div>
+
+    <label>Availability</label>
+    <select name="availability">
+      <option value="">Select Availability</option>
+      <option value="Full-time">Full-time</option>
+      <option value="Part-time">Part-time</option>
+      <option value="Weekends">Weekends Only</option>
+      <option value="On-call">On Call</option>
+      <option value="By Appointment">By Appointment</option>
+    </select>
+
+    <label>Description</label>
+    <textarea name="description" placeholder="Apni service ke baare mein detail mein batao..."></textarea>
+
+    <label>Service Photo</label>
+    <input type="file" name="photo" accept="image/*">
+
+    <hr class="divider">
+
+    <div class="note">📋 Contact info profile se auto-fill ho rahi hai.</div>
+
+    <div class="two-col">
+      <div>
+        <label>📞 Phone</label>
+        <input type="tel" name="phone"
+               value="{{ profile.phone }}" placeholder="9876543210">
+      </div>
+      <div>
+        <label>💬 WhatsApp</label>
+        <input type="tel" name="whatsapp"
+               value="{{ profile.phone }}" placeholder="9876543210">
+      </div>
+    </div>
+
+    <label>🌐 Website (optional)</label>
+    <input type="url" name="website" placeholder="https://yourwebsite.com">
+
+    <button type="submit" class="submit-btn">🚀 Post Service</button>
+  </form>
+</div>
+
+{% endblock %}

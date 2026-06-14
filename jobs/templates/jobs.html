@@ -1,0 +1,1171 @@
+{% extends 'master.html' %}
+
+{% block title %}Jobs – Guna City Portal{% endblock %}
+{% block nav_jobs %}active{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet">
+
+<style>
+  /* ── VARIABLES ── */
+  :root {
+    --j-bg:        #f7f5f2;
+    --j-white:     #ffffff;
+    --j-border:    #e8e3db;
+    --j-border2:   #d4ccbf;
+    --j-accent:    #e8621a;
+    --j-acc-lt:    #fdf2ec;
+    --j-acc-mid:   #f5c4a0;
+    --j-text:      #1a1612;
+    --j-text2:     #5a5046;
+    --j-text3:     #998e82;
+    --j-shadow:    0 2px 12px rgba(26,22,18,0.07);
+    --j-shadow-lg: 0 8px 32px rgba(26,22,18,0.11);
+    --j-radius:    16px;
+    --j-radius-sm: 11px;
+    --j-radius-xs: 8px;
+    --j-font-ui:   'Plus Jakarta Sans', sans-serif;
+    --j-font-read: 'Fraunces', serif;
+  }
+
+  .jobs-page * { box-sizing: border-box; }
+  .jobs-page { font-family: var(--j-font-ui); background: var(--j-bg); }
+
+  /* ── PAGE HEADER ── */
+  .jobs-header {
+    background: var(--j-white);
+    border-bottom: 1px solid var(--j-border);
+    padding: 18px 0 0;
+  }
+
+  .jobs-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .jobs-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .jobs-header-title {
+    font-family: var(--j-font-ui);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--j-text);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .jobs-count-pill {
+    background: var(--j-acc-lt);
+    color: var(--j-accent);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 13px;
+    border-radius: 100px;
+    border: 1px solid var(--j-acc-mid);
+    letter-spacing: 0.1px;
+  }
+
+  /* ── SEARCH BAR ── */
+  .jobs-search-wrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+  }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    background: var(--j-bg);
+    border: 1.5px solid var(--j-border2);
+    border-radius: 11px;
+    overflow: hidden;
+    flex: 1;
+    min-width: 220px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+
+  .search-field:focus-within {
+    border-color: var(--j-accent);
+    box-shadow: 0 0 0 3px rgba(232,98,26,0.10);
+    background: var(--j-white);
+  }
+
+  .search-field .s-icon {
+    padding: 0 10px 0 13px;
+    color: var(--j-text3);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .search-field input {
+    border: none;
+    outline: none;
+    background: none;
+    font-family: var(--j-font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--j-text);
+    padding: 12px 12px 12px 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-field input::placeholder {
+    color: var(--j-text3);
+    font-weight: 400;
+  }
+
+  .search-field .s-clear {
+    padding: 0 11px;
+    color: var(--j-text3);
+    cursor: pointer;
+    font-size: 15px;
+    display: none;
+    border: none;
+    background: none;
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+
+  .search-field .s-clear:hover { color: var(--j-text); }
+  .search-field input:not(:placeholder-shown) + .s-clear { display: flex; }
+
+  .filter-select {
+    border: 1.5px solid var(--j-border2);
+    border-radius: 11px;
+    background: var(--j-white);
+    font-family: var(--j-font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--j-text2);
+    padding: 11px 14px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.18s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23998e82' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+
+  .filter-select:focus { border-color: var(--j-accent); }
+
+  .jobs-results-bar {
+    padding: 8px 24px 0;
+    max-width: 1280px;
+    margin: 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--j-text3);
+    letter-spacing: 0.2px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .jobs-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 18px 24px 48px;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* ── LEFT: LIST ── */
+  .jobs-list-panel {
+    background: var(--j-white);
+    border: 1px solid var(--j-border);
+    border-radius: var(--j-radius);
+    overflow: hidden;
+    box-shadow: var(--j-shadow);
+    position: sticky;
+    top: 86px;
+    max-height: calc(100vh - 106px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .jobs-list-scroll {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px;
+  }
+
+  .jobs-list-scroll::-webkit-scrollbar { width: 3px; }
+  .jobs-list-scroll::-webkit-scrollbar-thumb { background: var(--j-border2); border-radius: 8px; }
+
+  .no-results {
+    text-align: center;
+    padding: 44px 20px;
+    color: var(--j-text3);
+    display: none;
+  }
+
+  .no-results .nr-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.35; }
+  .no-results p { font-size: 14.5px; font-weight: 700; color: var(--j-text2); }
+  .no-results small { font-size: 12.5px; }
+
+  /* ── JOB CARD ── */
+  .jcard {
+    border-radius: 12px;
+    padding: 14px 15px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    border: 1.5px solid transparent;
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .jcard:last-child { margin-bottom: 0; }
+
+  .jcard:hover {
+    background: var(--j-bg);
+    border-color: var(--j-border);
+    transform: translateX(2px);
+  }
+
+  .jcard.active {
+    background: var(--j-acc-lt);
+    border-color: var(--j-acc-mid);
+  }
+
+  .jcard.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 5px; bottom: 5px;
+    width: 3px;
+    background: var(--j-accent);
+    border-radius: 3px 0 0 3px;
+  }
+
+  .jcard-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .jcard-title {
+    font-family: var(--j-font-ui);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--j-text);
+    line-height: 1.35;
+  }
+
+  .jtype-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.1px;
+  }
+
+  .b-full     { background: #e8f5d6; color: #2a6308; }
+  .b-part     { background: #fef0d4; color: #8a4b08; }
+  .b-remote   { background: #dbeafe; color: #1e4da8; }
+  .b-contract { background: #fce7f3; color: #9b2b5e; }
+
+  .jcard-company {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .avatar-xs {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: var(--j-acc-lt);
+    color: var(--j-accent);
+    font-size: 9.5px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    border: 1px solid var(--j-acc-mid);
+    overflow: hidden;
+  }
+
+  .avatar-xs img { width: 100%; height: 100%; object-fit: cover; }
+
+  .jcard-co-name {
+    font-size: 12.5px;
+    color: var(--j-text2);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .jcard-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .jcard-meta span {
+    font-size: 11.5px;
+    color: var(--j-text3);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── RIGHT: DETAIL ── */
+  .jobs-detail-panel {
+    background: var(--j-white);
+    border: 1px solid var(--j-border);
+    border-radius: var(--j-radius);
+    box-shadow: var(--j-shadow);
+    overflow: hidden;
+    min-height: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .det-empty {
+    text-align: center;
+    color: var(--j-text3);
+    padding: 60px 32px;
+  }
+
+  .det-empty .de-icon { font-size: 48px; opacity: 0.18; margin-bottom: 14px; }
+
+  .det-empty p {
+    font-family: var(--j-font-ui);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--j-text2);
+    margin-bottom: 6px;
+  }
+
+  .det-empty small {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--j-text3);
+  }
+
+  /* Detail content */
+  .jdetail {
+    display: none;
+    width: 100%;
+    padding: 34px 42px 44px;
+    animation: detIn 0.2s ease forwards;
+  }
+
+  @keyframes detIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .jdetail.visible { display: block; }
+
+  /* Company row */
+  .det-co-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--j-border);
+  }
+
+  .avatar-md {
+    width: 52px; height: 52px;
+    border-radius: 13px;
+    background: var(--j-acc-lt);
+    color: var(--j-accent);
+    font-size: 17px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    border: 1.5px solid var(--j-acc-mid);
+    overflow: hidden;
+  }
+
+  .avatar-md img { width: 100%; height: 100%; object-fit: cover; border-radius: 13px; }
+
+  .det-co-name {
+    font-family: var(--j-font-ui);
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--j-text);
+    letter-spacing: -0.2px;
+  }
+
+  .det-posted {
+    font-size: 12px;
+    color: var(--j-text3);
+    font-weight: 500;
+    margin-top: 3px;
+  }
+
+  /* Job title — Fraunces serif for elegance */
+  .det-title {
+    font-family: var(--j-font-read);
+    font-size: 29px;
+    font-weight: 600;
+    color: var(--j-text);
+    letter-spacing: -0.4px;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .det-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .det-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 15px;
+    border-radius: 100px;
+  }
+
+  /* Meta grid */
+  .det-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 9px;
+    margin-bottom: 28px;
+  }
+
+  .det-meta-card {
+    background: var(--j-bg);
+    border: 1px solid var(--j-border);
+    border-radius: 11px;
+    padding: 13px 15px;
+    transition: border-color 0.15s;
+  }
+
+  .det-meta-card:hover { border-color: var(--j-acc-mid); }
+
+  .det-meta-lbl {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--j-text3);
+    margin-bottom: 6px;
+  }
+
+  .det-meta-val {
+    font-family: var(--j-font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--j-text);
+    word-break: break-word;
+    line-height: 1.3;
+  }
+
+  /* Section */
+  .det-section { margin-bottom: 26px; }
+
+  .det-sec-title {
+    font-family: var(--j-font-ui);
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--j-text3);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 13px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--j-border);
+  }
+
+  /* Description — Fraunces serif, comfortable & readable */
+  .det-desc {
+    font-family: var(--j-font-read);
+    font-size: 15px;
+    color: var(--j-text2);
+    line-height: 1.92;
+    white-space: pre-line;
+    letter-spacing: 0.01em;
+  }
+
+  /* Contact box */
+  .contact-box {
+    background: var(--j-bg);
+    border: 1px solid var(--j-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+
+  .contact-ico {
+    width: 36px; height: 36px;
+    background: var(--j-acc-lt);
+    color: var(--j-accent);
+    border-radius: 9px;
+    border: 1px solid var(--j-acc-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .contact-row span, .contact-row a {
+    font-family: var(--j-font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--j-text);
+    text-decoration: none;
+  }
+
+  .contact-row a:hover { color: var(--j-accent); text-decoration: underline; }
+
+  /* Apply bar */
+  .det-apply-bar {
+    display: flex;
+    gap: 9px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid var(--j-border);
+    flex-wrap: wrap;
+  }
+
+  .btn-apply {
+    flex: 1;
+    min-width: 110px;
+    padding: 14px 18px;
+    font-family: var(--j-font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    letter-spacing: -0.1px;
+  }
+
+  .btn-apply:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-apply.btn-accent {
+    background: var(--j-accent);
+    color: #fff;
+  }
+
+  .btn-apply.btn-accent:hover {
+    background: #cc5416;
+    box-shadow: 0 6px 20px rgba(232,98,26,0.30);
+  }
+
+  .btn-apply.btn-wa {
+    background: #25d366;
+    color: #fff;
+  }
+
+  .btn-apply.btn-wa:hover {
+    background: #1db356;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.26);
+  }
+
+  .btn-apply.btn-dark {
+    background: var(--j-text);
+    color: #fff;
+  }
+
+  .btn-apply.btn-dark:hover {
+    background: #2e2820;
+    box-shadow: 0 6px 20px rgba(26,22,18,0.20);
+  }
+
+  .btn-save {
+    width: 50px; height: 50px;
+    background: var(--j-white);
+    color: var(--j-text3);
+    font-size: 17px;
+    border: 1.5px solid var(--j-border);
+    border-radius: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.18s, background 0.18s, color 0.18s;
+    flex-shrink: 0;
+  }
+
+  .btn-save:hover {
+    border-color: var(--j-accent);
+    background: var(--j-acc-lt);
+    color: var(--j-accent);
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    .jobs-body {
+      grid-template-columns: 1fr;
+      padding: 14px;
+      gap: 14px;
+    }
+
+    .jobs-list-panel {
+      position: static;
+      max-height: 400px;
+    }
+
+    .jobs-detail-panel { min-height: auto; }
+    .jdetail { padding: 22px 18px 32px; }
+    .det-title { font-size: 22px; }
+    .det-meta-grid { grid-template-columns: 1fr 1fr; }
+    .jobs-header-inner { padding: 0 14px; }
+    .jobs-results-bar { padding: 8px 14px 0; }
+    .jobs-search-wrap { flex-direction: column; }
+    .search-field, .filter-select { width: 100%; }
+  }
+
+  @media (max-width: 500px) {
+    .det-title   { font-size: 20px; }
+    .det-desc    { font-size: 14px; }
+    .btn-apply   { font-size: 13px; }
+    .jcard-title { font-size: 13.5px; }
+  }
+</style>
+
+<!-- ── PAGE HEADER ── -->
+<div class="jobs-page">
+<div class="jobs-header">
+  <div class="jobs-header-inner">
+    <div class="jobs-header-row">
+      <div class="jobs-header-title">
+        💼 Jobs in Guna
+        <span class="jobs-count-pill" id="jobsCount">{{ jobs|length }} positions</span>
+      </div>
+    </div>
+
+    <!-- SEARCH + FILTER -->
+    <div class="jobs-search-wrap">
+
+      <div class="search-field" style="max-width:460px">
+        <span class="s-icon">🔍</span>
+        <input type="text"
+               id="jobSearch"
+               placeholder="Search by title, company, location..."
+               oninput="filterJobs()"
+               autocomplete="off">
+        <button class="s-clear" onclick="clearSearch()">✕</button>
+      </div>
+
+      <select class="filter-select" id="typeFilter" onchange="filterJobs()">
+        <option value="">All Types</option>
+        <option value="Full-time">Full Time</option>
+        <option value="Part-time">Part Time</option>
+        <option value="Remote">Remote</option>
+        <option value="Contract">Contract</option>
+      </select>
+
+      <select class="filter-select" id="locFilter" onchange="filterJobs()">
+        <option value="">All Locations</option>
+        {% for job in jobs %}
+        <option value="{{ job.location }}">{{ job.location }}</option>
+        {% endfor %}
+      </select>
+
+    </div>
+  </div>
+  <div class="jobs-results-bar" id="resultsBar">&nbsp;</div>
+</div>
+
+<!-- ── BODY ── -->
+<div class="jobs-body">
+
+  <!-- LEFT: list -->
+  <div class="jobs-list-panel">
+    <div class="jobs-list-scroll" id="jobsList">
+
+      {% if jobs %}
+        {% for job in jobs %}
+        <div class="jcard"
+             data-id="{{ job.id }}"
+             data-title="{{ job.title|lower }}"
+             data-company="{{ job.company|lower }}"
+             data-location="{{ job.location|lower }}"
+             data-type="{{ job.job_type }}"
+             onclick="showDetail(this)">
+
+          <div class="jcard-top">
+            <span class="jcard-title">{{ job.title }}</span>
+            <span class="jtype-badge
+              {% if job.job_type == 'Full-time' %}b-full
+              {% elif job.job_type == 'Part-time' %}b-part
+              {% elif job.job_type == 'Remote' %}b-remote
+              {% else %}b-contract{% endif %}">
+              {{ job.job_type }}
+            </span>
+          </div>
+
+          <div class="jcard-company">
+            <div class="avatar-xs">
+              {% if job.company_logo %}
+                <img src="{{ job.company_logo.url }}" alt="">
+              {% else %}
+                {{ job.company|slice:":2" }}
+              {% endif %}
+            </div>
+            <span class="jcard-co-name">{{ job.company }}</span>
+          </div>
+
+          <div class="jcard-meta">
+            {% if job.location %}<span>📍 {{ job.location }}</span>{% endif %}
+            {% if job.salary %}<span>💰 {{ job.salary }}</span>{% endif %}
+            {% if job.deadline %}<span>📅 {{ job.deadline|date:"d M" }}</span>{% endif %}
+          </div>
+
+        </div>
+        {% endfor %}
+
+      {% else %}
+        <!-- Demo cards -->
+        <div class="jcard active" data-id="d1" data-title="python django developer" data-company="tech solutions pvt ltd" data-location="guna mp" data-type="Full-time" onclick="showDetail(this)">
+          <div class="jcard-top">
+            <span class="jcard-title">Python Django Developer</span>
+            <span class="jtype-badge b-full">Full Time</span>
+          </div>
+          <div class="jcard-company">
+            <div class="avatar-xs">TS</div>
+            <span class="jcard-co-name">Tech Solutions Pvt Ltd</span>
+          </div>
+          <div class="jcard-meta">
+            <span>📍 Guna, MP</span>
+            <span>💰 ₹25,000/mo</span>
+          </div>
+        </div>
+
+        <div class="jcard" data-id="d2" data-title="frontend developer react" data-company="webx company" data-location="remote" data-type="Remote" onclick="showDetail(this)">
+          <div class="jcard-top">
+            <span class="jcard-title">Frontend Developer (React)</span>
+            <span class="jtype-badge b-remote">Remote</span>
+          </div>
+          <div class="jcard-company">
+            <div class="avatar-xs">WX</div>
+            <span class="jcard-co-name">WebX Company</span>
+          </div>
+          <div class="jcard-meta">
+            <span>📍 Remote</span>
+            <span>💰 ₹30,000/mo</span>
+          </div>
+        </div>
+
+        <div class="jcard" data-id="d3" data-title="digital marketing expert" data-company="apnaguna media" data-location="bhopal" data-type="Part-time" onclick="showDetail(this)">
+          <div class="jcard-top">
+            <span class="jcard-title">Digital Marketing Expert</span>
+            <span class="jtype-badge b-part">Part Time</span>
+          </div>
+          <div class="jcard-company">
+            <div class="avatar-xs">AM</div>
+            <span class="jcard-co-name">ApnaGuna Media</span>
+          </div>
+          <div class="jcard-meta">
+            <span>📍 Bhopal</span>
+            <span>💰 ₹18,000/mo</span>
+          </div>
+        </div>
+
+        <div class="jcard" data-id="d4" data-title="graphic designer" data-company="creative hub" data-location="indore" data-type="Full-time" onclick="showDetail(this)">
+          <div class="jcard-top">
+            <span class="jcard-title">Graphic Designer</span>
+            <span class="jtype-badge b-full">Full Time</span>
+          </div>
+          <div class="jcard-company">
+            <div class="avatar-xs">CH</div>
+            <span class="jcard-co-name">Creative Hub</span>
+          </div>
+          <div class="jcard-meta">
+            <span>📍 Indore</span>
+            <span>💰 ₹22,000/mo</span>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="no-results" id="noResults">
+        <div class="nr-icon">🔍</div>
+        <p>Koi job nahi mili</p>
+        <small>Dusri query try karein</small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: detail -->
+  <div class="jobs-detail-panel" id="detailPanel">
+
+    <div class="det-empty" id="detEmpty">
+      <div class="de-icon">💼</div>
+      <p>Job select karein</p>
+      <small>Left side se koi bhi job click karein details dekhne ke liye</small>
+    </div>
+
+    {% for job in jobs %}
+    <div class="jdetail" id="detail-{{ job.id }}">
+
+      <div class="det-co-row">
+        <div class="avatar-md">
+          {% if job.company_logo %}
+            <img src="{{ job.company_logo.url }}" alt="">
+          {% else %}
+            {{ job.company|slice:":2" }}
+          {% endif %}
+        </div>
+        <div>
+          <div class="det-co-name">{{ job.company }}</div>
+          <div class="det-posted">Posted {{ job.created_at|date:"d M Y" }}</div>
+        </div>
+      </div>
+
+      <div class="det-title">{{ job.title }}</div>
+
+      <div class="det-badges">
+        <span class="det-badge
+          {% if job.job_type == 'Full-time' %}b-full
+          {% elif job.job_type == 'Part-time' %}b-part
+          {% elif job.job_type == 'Remote' %}b-remote
+          {% else %}b-contract{% endif %}">
+          {{ job.job_type }}
+        </span>
+        {% if job.experience %}
+        <span class="det-badge" style="background:#ede8ff;color:#4a35b0;">🏅 {{ job.experience }}</span>
+        {% endif %}
+      </div>
+
+      <div class="det-meta-grid">
+        {% if job.location %}
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">📍 Location</div>
+          <div class="det-meta-val">{{ job.location }}</div>
+        </div>
+        {% endif %}
+        {% if job.salary %}
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">💰 Salary</div>
+          <div class="det-meta-val">{{ job.salary }}</div>
+        </div>
+        {% endif %}
+        {% if job.experience %}
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">🏅 Experience</div>
+          <div class="det-meta-val">{{ job.experience }}</div>
+        </div>
+        {% endif %}
+        {% if job.deadline %}
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">📅 Last Date</div>
+          <div class="det-meta-val">{{ job.deadline|date:"d M Y" }}</div>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if job.description %}
+      <div class="det-section">
+        <div class="det-sec-title">About the Role</div>
+        <div class="det-desc">{{ job.description }}</div>
+      </div>
+      {% endif %}
+
+      {% if job.phone or job.address %}
+      <div class="det-section">
+        <div class="det-sec-title">Contact Info</div>
+        <div class="contact-box">
+          {% if job.phone %}
+          <div class="contact-row">
+            <div class="contact-ico">📞</div>
+            <a href="tel:{{ job.phone }}">{{ job.phone }}</a>
+          </div>
+          {% endif %}
+          {% if job.address %}
+          <div class="contact-row">
+            <div class="contact-ico">🏠</div>
+            <span>{{ job.address }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="det-apply-bar">
+        {% if job.whatsapp %}
+        <a href="https://wa.me/91{{ job.whatsapp }}" target="_blank" class="btn-apply btn-wa">
+          💬 WhatsApp
+        </a>
+        {% endif %}
+        <a href="{% url 'job_detail' job.id %}" class="btn-apply btn-accent">
+          Apply Now →
+        </a>
+        <button class="btn-save" title="Save" onclick="toggleSave(this)">🔖</button>
+      </div>
+
+    </div>
+    {% endfor %}
+
+    <!-- Demo details (shown when no real jobs) -->
+    {% if not jobs %}
+    <div class="jdetail visible" id="detail-d1">
+      <div class="det-co-row">
+        <div class="avatar-md">TS</div>
+        <div>
+          <div class="det-co-name">Tech Solutions Pvt Ltd</div>
+          <div class="det-posted">Posted 1 Jun 2026</div>
+        </div>
+      </div>
+      <div class="det-title">Python Django Developer</div>
+      <div class="det-badges">
+        <span class="det-badge b-full">Full Time</span>
+        <span class="det-badge" style="background:#ede8ff;color:#4a35b0;">🏅 1–3 Years</span>
+      </div>
+      <div class="det-meta-grid">
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">📍 Location</div>
+          <div class="det-meta-val">Guna, MP</div>
+        </div>
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">💰 Salary</div>
+          <div class="det-meta-val">₹25,000/mo</div>
+        </div>
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">🏅 Experience</div>
+          <div class="det-meta-val">1–3 Years</div>
+        </div>
+        <div class="det-meta-card">
+          <div class="det-meta-lbl">📅 Last Date</div>
+          <div class="det-meta-val">30 Jun 2026</div>
+        </div>
+      </div>
+      <div class="det-section">
+        <div class="det-sec-title">About the Role</div>
+        <div class="det-desc">Hum ek talented Python/Django developer dhundh rahe hain jo hamare backend team mein join kare.
+
+Aapko REST APIs banana, database design karna, aur team ke saath mil ke kaam karna hoga.
+
+Skills chahiye: Python, Django, DRF, PostgreSQL, Git. React knowledge bonus hogi.</div>
+      </div>
+      <div class="det-section">
+        <div class="det-sec-title">Contact Info</div>
+        <div class="contact-box">
+          <div class="contact-row">
+            <div class="contact-ico">📞</div>
+            <a href="tel:9876543210">+91 98765 43210</a>
+          </div>
+          <div class="contact-row">
+            <div class="contact-ico">🏠</div>
+            <span>Tech Solutions, Station Road, Guna, MP</span>
+          </div>
+        </div>
+      </div>
+      <div class="det-apply-bar">
+        <a href="#" class="btn-apply btn-wa">💬 WhatsApp</a>
+        <a href="#" class="btn-apply btn-accent">Apply Now →</a>
+        <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+      </div>
+    </div>
+
+    <div class="jdetail" id="detail-d2">
+      <div class="det-co-row">
+        <div class="avatar-md">WX</div>
+        <div>
+          <div class="det-co-name">WebX Company</div>
+          <div class="det-posted">Posted 3 Jun 2026</div>
+        </div>
+      </div>
+      <div class="det-title">Frontend Developer (React)</div>
+      <div class="det-badges">
+        <span class="det-badge b-remote">Remote</span>
+        <span class="det-badge" style="background:#ede8ff;color:#4a35b0;">🏅 2+ Years</span>
+      </div>
+      <div class="det-meta-grid">
+        <div class="det-meta-card"><div class="det-meta-lbl">📍 Location</div><div class="det-meta-val">Remote</div></div>
+        <div class="det-meta-card"><div class="det-meta-lbl">💰 Salary</div><div class="det-meta-val">₹30,000/mo</div></div>
+        <div class="det-meta-card"><div class="det-meta-lbl">🏅 Experience</div><div class="det-meta-val">2+ Years</div></div>
+        <div class="det-meta-card"><div class="det-meta-lbl">📅 Last Date</div><div class="det-meta-val">15 Jul 2026</div></div>
+      </div>
+      <div class="det-section">
+        <div class="det-sec-title">About the Role</div>
+        <div class="det-desc">React developer chahiye jo modern web apps bana sake. Kaam fully remote hai.
+
+Skills: React, Tailwind CSS, REST APIs, Git. TypeScript knowledge preferred hogi.</div>
+      </div>
+      <div class="det-apply-bar">
+        <a href="#" class="btn-apply btn-wa">💬 WhatsApp</a>
+        <a href="#" class="btn-apply btn-accent">Apply Now →</a>
+        <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+      </div>
+    </div>
+
+    <div class="jdetail" id="detail-d3">
+      <div class="det-co-row">
+        <div class="avatar-md">AM</div>
+        <div>
+          <div class="det-co-name">ApnaGuna Media</div>
+          <div class="det-posted">Posted 5 Jun 2026</div>
+        </div>
+      </div>
+      <div class="det-title">Digital Marketing Expert</div>
+      <div class="det-badges">
+        <span class="det-badge b-part">Part Time</span>
+      </div>
+      <div class="det-meta-grid">
+        <div class="det-meta-card"><div class="det-meta-lbl">📍 Location</div><div class="det-meta-val">Bhopal</div></div>
+        <div class="det-meta-card"><div class="det-meta-lbl">💰 Salary</div><div class="det-meta-val">₹18,000/mo</div></div>
+      </div>
+      <div class="det-section">
+        <div class="det-sec-title">About the Role</div>
+        <div class="det-desc">Social media, SEO, aur online ads handle karne ke liye digital marketing expert chahiye. Facebook, Instagram aur Google Ads ka experience zaruri hai.</div>
+      </div>
+      <div class="det-apply-bar">
+        <a href="#" class="btn-apply btn-accent">Apply Now →</a>
+        <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+      </div>
+    </div>
+
+    <div class="jdetail" id="detail-d4">
+      <div class="det-co-row">
+        <div class="avatar-md">CH</div>
+        <div>
+          <div class="det-co-name">Creative Hub</div>
+          <div class="det-posted">Posted 7 Jun 2026</div>
+        </div>
+      </div>
+      <div class="det-title">Graphic Designer</div>
+      <div class="det-badges">
+        <span class="det-badge b-full">Full Time</span>
+      </div>
+      <div class="det-meta-grid">
+        <div class="det-meta-card"><div class="det-meta-lbl">📍 Location</div><div class="det-meta-val">Indore</div></div>
+        <div class="det-meta-card"><div class="det-meta-lbl">💰 Salary</div><div class="det-meta-val">₹22,000/mo</div></div>
+      </div>
+      <div class="det-section">
+        <div class="det-sec-title">About the Role</div>
+        <div class="det-desc">Creative graphic designer chahiye. Photoshop, Illustrator, Figma ka achha knowledge hona chahiye. Social media posts, brochures, aur brand identity design karna hoga.</div>
+      </div>
+      <div class="det-apply-bar">
+        <a href="#" class="btn-apply btn-accent">Apply Now →</a>
+        <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+</div>
+</div>
+
+<script>
+  function showDetail(el) {
+    document.querySelectorAll('.jcard').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const id = el.dataset.id;
+    const emp = document.getElementById('detEmpty');
+    if (emp) emp.style.display = 'none';
+    document.querySelectorAll('.jdetail').forEach(d => {
+      d.classList.remove('visible');
+      d.style.display = 'none';
+    });
+    const det = document.getElementById('detail-' + id);
+    if (det) {
+      det.style.display = 'block';
+      det.classList.remove('visible');
+      void det.offsetWidth;
+      det.classList.add('visible');
+    }
+    if (window.innerWidth <= 900) {
+      setTimeout(() => {
+        document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    }
+  }
+
+  function filterJobs() {
+    const q    = document.getElementById('jobSearch').value.toLowerCase().trim();
+    const type = document.getElementById('typeFilter').value;
+    const loc  = document.getElementById('locFilter').value.toLowerCase();
+    const cards = document.querySelectorAll('.jcard');
+    let visible = 0;
+    cards.forEach(c => {
+      const title    = c.dataset.title    || '';
+      const company  = c.dataset.company  || '';
+      const location = c.dataset.location || '';
+      const ctype    = c.dataset.type     || '';
+      const matchQ    = !q    || title.includes(q) || company.includes(q) || location.includes(q);
+      const matchType = !type || ctype === type;
+      const matchLoc  = !loc  || location.includes(loc);
+      if (matchQ && matchType && matchLoc) {
+        c.style.display = '';
+        visible++;
+      } else {
+        c.style.display = 'none';
+      }
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    const pill = document.getElementById('jobsCount');
+    if (pill) pill.textContent = visible + ' position' + (visible !== 1 ? 's' : '');
+    const bar = document.getElementById('resultsBar');
+    if (q || type || loc) {
+      bar.textContent = visible + ' results found';
+    } else {
+      bar.innerHTML = '&nbsp;';
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('jobSearch').value = '';
+    filterJobs();
+  }
+
+  function toggleSave(btn) {
+    const saved = btn.dataset.saved === 'true';
+    btn.dataset.saved = saved ? 'false' : 'true';
+    btn.textContent = saved ? '🔖' : '❤️';
+    btn.style.borderColor = saved ? '' : 'var(--j-accent)';
+    btn.style.background  = saved ? '' : 'var(--j-acc-lt)';
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const first = document.querySelector('.jcard');
+    if (first) showDetail(first);
+  });
+</script>
+
+{% endblock %}

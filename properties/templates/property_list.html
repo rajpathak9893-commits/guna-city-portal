@@ -1,0 +1,666 @@
+{% extends 'master.html' %}
+
+{% block title %}Properties – ApnaGuna Pro{% endblock %}
+
+{% block nav_props %}active{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F7F5F1;
+  color: #1A1A2E;
+}
+
+/* ══════════════════════════════════════════
+   HERO SECTION — sliding background
+══════════════════════════════════════════ */
+.prop-hero {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Slideshow */
+.hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.hero-slide.active { opacity: 1; }
+
+/* Overlay gradient */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,10,30,0.25) 0%,
+    rgba(10,10,30,0.55) 60%,
+    rgba(10,10,30,0.82) 100%
+  );
+  z-index: 1;
+}
+
+/* Hero content */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 0 40px 36px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-text {}
+
+.hero-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 38px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+}
+
+/* Slide dots */
+.hero-dots {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.hero-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  padding: 0;
+}
+
+.hero-dot.active {
+  background: #fff;
+  transform: scale(1.35);
+}
+
+/* ══════════════════════════════════════════
+   FILTER + RESULTS BAR
+══════════════════════════════════════════ */
+.prop-controls {
+  background: #fff;
+  border-bottom: 1px solid #E8E4DC;
+  padding: 14px 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.filter-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+  border: 1.5px solid #E2DDD4;
+  border-radius: 10px;
+  padding: 0 14px;
+  background: #FAFAF8;
+  transition: border-color 0.2s;
+}
+
+.filter-search:focus-within { border-color: #8B7355; }
+
+.filter-search i { font-size: 16px; color: #B0A898; }
+
+.filter-search input {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  color: #1A1A2E;
+  padding: 11px 0;
+  width: 100%;
+}
+
+.filter-search input::placeholder { color: #B0A898; }
+
+.fsel {
+  background: #FAFAF8;
+  border: 1.5px solid #E2DDD4;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #5C5548;
+  padding: 10px 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.fsel:hover, .fsel:focus { border-color: #8B7355; }
+
+.results-pill {
+  margin-left: auto;
+  background: #F2EDE5;
+  color: #6B5E4A;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════
+   GRID
+══════════════════════════════════════════ */
+.prop-main {
+  padding: 36px 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.prop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 24px;
+}
+
+/* ══════════════════════════════════════════
+   PROPERTY CARD
+══════════════════════════════════════════ */
+.prop-card {
+  background: #fff;
+  border: 1px solid #EAE6DF;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  animation: cardIn 0.4s ease both;
+}
+
+.prop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px rgba(90,74,55,0.13);
+  border-color: #C4B89A;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger */
+.prop-card:nth-child(1) { animation-delay: 0.05s; }
+.prop-card:nth-child(2) { animation-delay: 0.10s; }
+.prop-card:nth-child(3) { animation-delay: 0.15s; }
+.prop-card:nth-child(4) { animation-delay: 0.20s; }
+.prop-card:nth-child(5) { animation-delay: 0.25s; }
+.prop-card:nth-child(6) { animation-delay: 0.30s; }
+
+/* Thumb */
+.prop-thumb {
+  position: relative;
+  height: 210px;
+  background: #EDE8DF;
+  overflow: hidden;
+}
+
+.prop-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.prop-card:hover .prop-thumb img { transform: scale(1.05); }
+
+.prop-thumb-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EDE8DF;
+  font-size: 48px;
+  color: #C4B89A;
+}
+
+/* Badge — only ONE per card */
+.prop-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 7px;
+}
+
+.badge-sale { background: #1A1A2E; color: #fff; }
+.badge-rent { background: #2563EB; color: #fff; }
+
+/* Fav — subtle */
+.prop-fav {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.88);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #B0A898;
+  font-size: 15px;
+  transition: color 0.2s, background 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.prop-fav:hover { color: #E11D48; background: #fff; }
+
+/* Card body */
+.prop-body {
+  padding: 18px 20px 20px;
+}
+
+.prop-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1A2E;
+  letter-spacing: -0.3px;
+  margin-bottom: 5px;
+}
+
+.prop-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A2E;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prop-location {
+  font-size: 12.5px;
+  color: #8A8070;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+/* Specs — compact pills */
+.prop-specs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F0ECE5;
+}
+
+.spec-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5C5548;
+  background: #F7F4EF;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+/* Footer — just one button */
+.prop-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.prop-time {
+  font-size: 11.5px;
+  color: #B0A898;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: #1A1A2E;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 9px;
+  transition: background 0.18s, transform 0.1s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-view:hover { background: #2D2D4E; }
+.btn-view:active { transform: scale(0.97); }
+
+/* ══════════════════════════════════════════
+   ADD PROPERTY CTA (subtle, at top right)
+══════════════════════════════════════════ */
+.btn-add-prop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #fff;
+  color: #1A1A2E;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(6px);
+  transition: background 0.18s;
+  white-space: nowrap;
+}
+
+.btn-add-prop:hover { background: #f0f0f0; }
+
+/* ══════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════ */
+.empty-state {
+  text-align: center;
+  padding: 90px 20px;
+  color: #B0A898;
+}
+
+.empty-icon {
+  width: 72px; height: 72px;
+  border-radius: 18px;
+  background: #F2EDE5;
+  border: 1px solid #E2DDD4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 30px;
+  color: #C4B89A;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A2E;
+  margin-bottom: 6px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .hero-title { font-size: 26px; }
+  .hero-content { padding: 0 18px 28px; }
+  .prop-controls { padding: 12px 16px; }
+  .filter-search { min-width: 100%; }
+  .prop-main { padding: 24px 16px 50px; }
+  .prop-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ══════ HERO ══════ -->
+<div class="prop-hero">
+
+  <div class="hero-slides" id="heroSlides">
+    <!-- Real property landmark images from Unsplash (free) -->
+    <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+  </div>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-eyebrow">ApnaGuna Pro · Real Estate</div>
+      <div class="hero-title">Find Your Perfect Property</div>
+      <div class="hero-sub">Browse flats, houses, shops &amp; plots across India</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:16px">
+      <a href="/properties/add/" class="btn-add-prop">
+        <i class="ti ti-plus"></i> Add Property
+      </a>
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════ STICKY FILTER BAR ══════ -->
+<div class="prop-controls">
+  <div class="filter-search">
+    <i class="ti ti-search"></i>
+    <input type="text" placeholder="Search city, locality, project…" id="propSearch">
+  </div>
+
+  <select class="fsel" id="filterType">
+    <option value="">All Types</option>
+    <option>Flat / Apartment</option>
+    <option>House / Villa</option>
+    <option>Plot / Land</option>
+    <option>Commercial</option>
+    <option>PG / Hostel</option>
+  </select>
+
+  <select class="fsel" id="filterListing">
+    <option value="">Sale &amp; Rent</option>
+    <option>For Sale</option>
+    <option>For Rent</option>
+  </select>
+
+  <div class="results-pill" id="resultsPill">{{ properties|length }} Properties</div>
+</div>
+
+<!-- ══════ MAIN GRID ══════ -->
+<div class="prop-main">
+
+  {% if properties %}
+  <div class="prop-grid" id="propGrid">
+    {% for property in properties %}
+    <div class="prop-card"
+         data-title="{{ property.title|lower }}"
+         data-location="{{ property.location|lower }}"
+         data-listing="{{ property.listing_type }}">
+
+      <!-- Thumb -->
+      <div class="prop-thumb">
+        {% if property.image %}
+          <img src="{{ property.image.url }}" alt="{{ property.title }}">
+        {% else %}
+          <div class="prop-thumb-ph"><i class="ti ti-building"></i></div>
+        {% endif %}
+
+        {% if property.listing_type == 'rent' %}
+          <div class="prop-badge badge-rent">For Rent</div>
+        {% else %}
+          <div class="prop-badge badge-sale">For Sale</div>
+        {% endif %}
+
+        <button class="prop-fav" aria-label="Save property">
+          <i class="ti ti-heart"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="prop-body">
+
+        <div class="prop-price">₹{{ property.price }}</div>
+        <div class="prop-title">{{ property.title }}</div>
+        <div class="prop-location">
+          <i class="ti ti-map-pin" style="font-size:13px"></i>
+          {{ property.location }}
+        </div>
+
+        {% if property.bedrooms or property.bathrooms or property.area %}
+        <div class="prop-specs">
+          {% if property.bedrooms %}
+            <div class="spec-pill"><i class="ti ti-bed" style="font-size:13px"></i> {{ property.bedrooms }} BHK</div>
+          {% endif %}
+          {% if property.bathrooms %}
+            <div class="spec-pill"><i class="ti ti-bath" style="font-size:13px"></i> {{ property.bathrooms }} Bath</div>
+          {% endif %}
+          {% if property.area %}
+            <div class="spec-pill"><i class="ti ti-ruler" style="font-size:13px"></i> {{ property.area }} sq.ft</div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="prop-footer">
+          <div class="prop-time">
+            <i class="ti ti-clock" style="font-size:12px"></i>
+            {% if property.created_at %}{{ property.created_at|timesince }} ago{% else %}Recently added{% endif %}
+          </div>
+          <a href="/properties/{{ property.id }}/" class="btn-view">
+            View Details <i class="ti ti-arrow-right" style="font-size:13px"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon"><i class="ti ti-building-off"></i></div>
+    <h3>No properties listed yet</h3>
+    <p>Be the first to list a property in your area.</p>
+    <a href="/properties/add/" class="btn-view" style="display:inline-flex;margin-top:4px">
+      <i class="ti ti-plus"></i> Add First Property
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ══════ HERO SLIDESHOW JS ══════ -->
+<script>
+  (function() {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dotsEl = document.getElementById('heroDots');
+    let cur = 0;
+
+    // Build dots
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      slides[cur].classList.remove('active');
+      dotsEl.children[cur].classList.remove('active');
+      cur = n;
+      slides[cur].classList.add('active');
+      dotsEl.children[cur].classList.add('active');
+    }
+
+    setInterval(() => goTo((cur + 1) % slides.length), 4500);
+  })();
+
+  // Live search filter
+  const searchEl = document.getElementById('propSearch');
+  const typeEl   = document.getElementById('filterType');
+  const listEl   = document.getElementById('filterListing');
+  const pill     = document.getElementById('resultsPill');
+
+  function filterCards() {
+    const q    = searchEl ? searchEl.value.toLowerCase() : '';
+    const lst  = listEl ? listEl.value.toLowerCase() : '';
+    const cards = document.querySelectorAll('.prop-card');
+    let vis = 0;
+    cards.forEach(c => {
+      const title    = c.dataset.title || '';
+      const location = c.dataset.location || '';
+      const listing  = c.dataset.listing || '';
+      const matchQ   = !q || title.includes(q) || location.includes(q);
+      const matchL   = !lst || listing.includes(lst.replace('for ', ''));
+      const show = matchQ && matchL;
+      c.style.display = show ? '' : 'none';
+      if (show) vis++;
+    });
+    if (pill) pill.textContent = vis + ' Propert' + (vis === 1 ? 'y' : 'ies');
+  }
+
+  if (searchEl) searchEl.addEventListener('input', filterCards);
+  if (listEl)   listEl.addEventListener('change', filterCards);
+  if (typeEl)   typeEl.addEventListener('change', filterCards);
+</script>
+
+{% endblock %}

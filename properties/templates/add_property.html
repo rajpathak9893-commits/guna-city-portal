@@ -1,0 +1,83 @@
+{% extends 'master.html' %}
+
+{% block title %}
+Add Property
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-section">
+
+    <h2>
+        Add Property
+    </h2>
+
+    <br><br>
+
+    <div
+        class="job-card"
+        style="max-width:700px;margin:auto;"
+    >
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="title"
+                placeholder="Property Title"
+                required
+            >
+
+            <br><br>
+
+            <input
+                type="number"
+                name="price"
+                placeholder="Price"
+                required
+            >
+
+            <br><br>
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Location"
+                required
+            >
+
+            <br><br>
+
+            <textarea
+                name="description"
+                rows="6"
+                placeholder="Description"
+            ></textarea>
+
+            <br><br>
+
+            <input
+                type="file"
+                name="image"
+            >
+
+            <br><br>
+
+            <button type="submit">
+
+                Add Property
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

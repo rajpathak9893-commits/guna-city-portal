@@ -1,0 +1,720 @@
+{% extends 'master.html' %}
+{% block title %}Apna Business Add Karo — ApnaGuna{% endblock %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root{
+  --saffron:#F97316;
+  --saffron-dark:#EA580C;
+  --saffron-pale:#FFF7ED;
+  --navy:#1E3A5F;
+  --navy-mid:#2D5282;
+  --gold:#D97706;
+  --ivory:#FAFAF7;
+  --white:#FFFFFF;
+  --border:#E2E8F0;
+  --border-focus:#F97316;
+  --text:#1E293B;
+  --text-sub:#64748B;
+  --green:#16A34A;
+  --red:#DC2626;
+  --radius:12px;
+  --card-shadow:0 4px 24px rgba(30,58,95,.10);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--ivory);color:var(--text)}
+
+/* ── HEADER ── */
+.al-header{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);
+  padding:52px 20px 44px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.al-header::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(249,115,22,.18) 0%,transparent 70%);
+}
+.al-header::after{
+  content:'';position:absolute;bottom:-60px;left:-40px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(217,119,6,.12) 0%,transparent 70%);
+}
+.al-eyebrow{
+  display:inline-block;
+  background:rgba(249,115,22,.18);
+  color:#FDBA74;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;
+  border:1px solid rgba(249,115,22,.3);
+  margin-bottom:14px;
+  animation:fdDown .5s ease both;
+}
+.al-header h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(26px,5vw,44px);font-weight:800;
+  color:#fff;margin-bottom:8px;
+  animation:fdDown .55s .08s ease both;
+}
+.al-header h1 span{
+  background:linear-gradient(90deg,#FDBA74,#FCD34D);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.al-header p{
+  color:rgba(255,255,255,.6);font-size:15px;
+  animation:fdDown .55s .16s ease both;
+}
+
+/* ── FORM WRAPPER ── */
+.al-wrap{
+  max-width:780px;margin:-28px auto 60px;
+  padding:0 16px;
+}
+
+/* ── SECTION CARD ── */
+.al-card{
+  background:var(--white);
+  border-radius:18px;
+  box-shadow:var(--card-shadow);
+  border:1px solid var(--border);
+  margin-bottom:20px;
+  overflow:hidden;
+  animation:slideUp .5s ease both;
+}
+.al-card:nth-child(2){animation-delay:.06s}
+.al-card:nth-child(3){animation-delay:.12s}
+.al-card:nth-child(4){animation-delay:.18s}
+.al-card:nth-child(5){animation-delay:.24s}
+
+.al-card-head{
+  display:flex;align-items:center;gap:12px;
+  padding:18px 24px;
+  background:linear-gradient(90deg,var(--saffron-pale),#fff);
+  border-bottom:1px solid #FED7AA;
+  cursor:pointer;
+  user-select:none;
+}
+.al-card-head .head-icon{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  flex-shrink:0;
+}
+.al-card-head h3{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:700;
+  color:var(--navy);flex:1;
+}
+.al-card-head .badge-opt{
+  font-size:11px;font-weight:600;color:var(--text-sub);
+  background:#F1F5F9;padding:3px 10px;border-radius:20px;
+  flex-shrink:0;
+}
+.al-card-head .badge-req{
+  font-size:11px;font-weight:600;color:var(--saffron);
+  background:var(--saffron-pale);padding:3px 10px;border-radius:20px;
+  flex-shrink:0;
+}
+.al-card-head .chevron{
+  font-size:14px;color:var(--text-sub);
+  transition:transform .25s;flex-shrink:0;
+}
+.al-card-head.collapsed .chevron{transform:rotate(-90deg)}
+
+.al-card-body{
+  padding:24px;
+  transition:max-height .3s ease,padding .3s ease;
+}
+.al-card-body.hidden{
+  max-height:0!important;padding:0 24px;overflow:hidden;
+}
+
+/* ── FIELDS ── */
+.field-row{display:grid;gap:14px;margin-bottom:14px}
+.field-row.two{grid-template-columns:1fr 1fr}
+.field-row.three{grid-template-columns:1fr 1fr 1fr}
+
+.fg{display:flex;flex-direction:column;gap:5px}
+
+.fg label{
+  font-size:13px;font-weight:600;color:var(--navy);
+  display:flex;align-items:center;gap:5px;
+}
+.fg label .req{color:var(--saffron);font-size:14px}
+.fg label .opt-tag{
+  font-size:11px;font-weight:400;color:var(--text-sub);
+}
+
+.fg input,.fg select,.fg textarea{
+  width:100%;
+  padding:12px 14px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  color:var(--text);background:#FAFCFF;
+  outline:none;transition:border-color .18s,box-shadow .18s,background .18s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--border-focus);
+  box-shadow:0 0 0 3px rgba(249,115,22,.12);
+  background:#fff;
+}
+.fg input::placeholder,.fg textarea::placeholder{color:#CBD5E1}
+.fg select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748B' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.fg textarea{resize:vertical;min-height:90px;line-height:1.6}
+
+.field-hint{font-size:12px;color:var(--text-sub);margin-top:2px}
+
+/* char counter */
+.char-counter{font-size:11px;color:var(--text-sub);text-align:right}
+.char-counter.warn{color:var(--gold)}
+.char-counter.over{color:var(--red)}
+
+/* ── PHOTO UPLOAD ── */
+.photo-upload-zone{
+  border:2px dashed #CBD5E1;
+  border-radius:14px;
+  padding:28px 20px;
+  text-align:center;
+  cursor:pointer;
+  position:relative;
+  transition:border-color .2s,background .2s;
+  background:#FAFCFF;
+}
+.photo-upload-zone:hover,.photo-upload-zone.dragover{
+  border-color:var(--saffron);
+  background:var(--saffron-pale);
+}
+.photo-upload-zone input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.upload-ico{font-size:30px;margin-bottom:8px}
+.upload-main-text{font-size:14px;font-weight:600;color:var(--navy)}
+.upload-sub-text{font-size:12px;color:var(--text-sub);margin-top:4px}
+
+.preview-grid{
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;
+}
+.preview-item{
+  position:relative;width:80px;height:80px;
+  border-radius:10px;overflow:hidden;
+  border:2px solid var(--border);
+  animation:popIn .25s ease;
+}
+.preview-item img{width:100%;height:100%;object-fit:cover}
+.preview-item .del-btn{
+  position:absolute;top:3px;right:3px;
+  background:rgba(0,0,0,.6);color:#fff;
+  border:none;border-radius:50%;
+  width:20px;height:20px;font-size:11px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  line-height:1;
+}
+.preview-item .del-btn:hover{background:var(--red)}
+
+/* ── SUBMIT AREA ── */
+.al-submit-area{
+  background:var(--white);
+  border-radius:18px;
+  box-shadow:var(--card-shadow);
+  border:1px solid var(--border);
+  padding:28px 24px;
+  animation:slideUp .5s .28s ease both;opacity:0;
+}
+.pending-note{
+  background:var(--saffron-pale);
+  border:1px solid #FED7AA;
+  border-radius:10px;
+  padding:12px 16px;
+  font-size:13px;color:#92400E;
+  margin-bottom:20px;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.btn-submit-main{
+  width:100%;
+  padding:16px;
+  background:linear-gradient(135deg,var(--saffron),var(--saffron-dark));
+  color:#fff;border:none;border-radius:var(--radius);
+  font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;
+  cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 4px 14px rgba(249,115,22,.35);
+}
+.btn-submit-main:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(249,115,22,.45)}
+.btn-submit-main:active{transform:translateY(0)}
+.btn-submit-main:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ── TOAST ── */
+#toastContainer{
+  position:fixed;bottom:24px;right:24px;
+  display:flex;flex-direction:column;gap:8px;z-index:9999;
+}
+.toast{
+  display:flex;align-items:center;gap:10px;
+  background:var(--navy);color:#fff;
+  padding:13px 18px;border-radius:12px;
+  font-size:14px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+  min-width:240px;max-width:320px;
+  animation:toastIn .35s ease;
+  border-left:4px solid var(--saffron);
+}
+.toast.success{border-left-color:var(--green)}
+.toast.error{border-left-color:var(--red)}
+
+/* ── KEYFRAMES ── */
+@keyframes fdDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .field-row.two,.field-row.three{grid-template-columns:1fr}
+  .al-card-body{padding:16px}
+  #toastContainer{bottom:12px;right:12px;left:12px}
+  .toast{min-width:unset}
+}
+</style>
+
+<div id="toastContainer"></div>
+
+<!-- HEADER -->
+<div class="al-header">
+  <div class="al-eyebrow">🏪 Free Listing</div>
+  <h1>Apna <span>Business Add Karo</span></h1>
+  <p>Guna ke hazaron logo tak pahuncho — bilkul free mein</p>
+</div>
+
+<div class="al-wrap">
+
+  <form method="POST" enctype="multipart/form-data" id="mainForm" novalidate>
+    {% csrf_token %}
+
+    <!-- ══ CARD 1: Basic Info (REQUIRED) ══ -->
+    <div class="al-card">
+      <div class="al-card-head" onclick="toggleCard(this)">
+        <div class="head-icon">🏢</div>
+        <h3>Business ki Basic Jaankari</h3>
+        <span class="badge-req">Zaroori</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="al-card-body">
+
+        <div class="field-row">
+          <div class="fg">
+            <label>Business ka Naam <span class="req">*</span></label>
+            <input type="text" name="title" id="titleInput"
+              placeholder="e.g. Sharma Electronics, Hotel Guna Palace, Raj Mobile Shop"
+              value="{{ post_data.title|default:'' }}"
+              maxlength="200" required
+              oninput="updateChar('titleInput','titleCount',200)">
+            <div class="char-counter" id="titleCount">0 / 200</div>
+          </div>
+        </div>
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Category <span class="req">*</span></label>
+            <select name="category" id="catSelect" required>
+              <option value="">-- Category Chuniye --</option>
+              {% for cat in categories %}
+              <option value="{{ cat.id }}"
+                {% if post_data.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                {% if cat.icon %}{{ cat.icon }} {% endif %}{{ cat.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="fg">
+            <label>Business Hours <span class="opt-tag">(optional)</span></label>
+            <input type="text" name="business_hours"
+              placeholder="e.g. Mon–Sat 9am–8pm, Sun Closed"
+              value="{{ post_data.business_hours|default:'' }}">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="fg">
+            <label>Business ki Jankari <span class="req">*</span></label>
+            <textarea name="description" id="descInput"
+              placeholder="Apne business ke baare mein likhein — kya bechte hain, kya service dete hain, kuch khas cheez..."
+              maxlength="2000" required
+              oninput="updateChar('descInput','descCount',2000)">{{ post_data.description|default:'' }}</textarea>
+            <div class="char-counter" id="descCount">0 / 2000</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CARD 2: Contact (REQUIRED phone, rest optional) ══ -->
+    <div class="al-card">
+      <div class="al-card-head" onclick="toggleCard(this)">
+        <div class="head-icon">📞</div>
+        <h3>Contact Details</h3>
+        <span class="badge-req">Phone zaroori</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="al-card-body">
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" name="phone"
+              placeholder="9876543210"
+              value="{{ post_data.phone|default:'' }}"
+              maxlength="15" required>
+          </div>
+          <div class="fg">
+            <label>WhatsApp Number <span class="opt-tag">(same number hai toh blank chodein)</span></label>
+            <input type="tel" name="whatsapp"
+              placeholder="Phone se alag hai toh likhein"
+              value="{{ post_data.whatsapp|default:'' }}"
+              maxlength="15">
+          </div>
+        </div>
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Email <span class="opt-tag">(optional)</span></label>
+            <input type="email" name="email"
+              placeholder="business@example.com"
+              value="{{ post_data.email|default:'' }}">
+          </div>
+          <div class="fg">
+            <label>Website <span class="opt-tag">(optional)</span></label>
+            <input type="url" name="website"
+              placeholder="https://apniwebsite.com"
+              value="{{ post_data.website|default:'' }}">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CARD 3: Location (REQUIRED address) ══ -->
+    <div class="al-card">
+      <div class="al-card-head" onclick="toggleCard(this)">
+        <div class="head-icon">📍</div>
+        <h3>Location / Pata</h3>
+        <span class="badge-req">Address zaroori</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="al-card-body">
+
+        <div class="field-row">
+          <div class="fg">
+            <label>Pura Pata <span class="req">*</span></label>
+            <input type="text" name="address"
+              placeholder="Shop no., Gali, Mohalla / Colony ka naam"
+              value="{{ post_data.address|default:'' }}"
+              required>
+          </div>
+        </div>
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Area / Locality <span class="opt-tag">(optional)</span></label>
+            <input type="text" name="area"
+              placeholder="e.g. Civil Lines, Gandhi Chowk, Mandi Area"
+              value="{{ post_data.area|default:'' }}">
+          </div>
+          <div class="fg">
+            <label>Pincode <span class="opt-tag">(optional)</span></label>
+            <input type="text" name="pincode"
+              placeholder="473001"
+              value="{{ post_data.pincode|default:'' }}"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              oninput="this.value=this.value.replace(/\D/g,'')">
+          </div>
+        </div>
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Shahar</label>
+            <input type="text" name="city"
+              value="{{ post_data.city|default:'Guna' }}">
+          </div>
+          <div class="fg">
+            <label>Rajya</label>
+            <input type="text" name="state"
+              value="{{ post_data.state|default:'Madhya Pradesh' }}">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CARD 4: Photos (fully optional) ══ -->
+    <div class="al-card">
+      <div class="al-card-head" onclick="toggleCard(this)">
+        <div class="head-icon">📷</div>
+        <h3>Photos</h3>
+        <span class="badge-opt">Optional — baad mein bhi add kar sakte hain</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="al-card-body">
+
+        <div class="fg" style="margin-bottom:18px">
+          <label>Cover Photo (main image)</label>
+          <div class="photo-upload-zone" id="coverZone">
+            <input type="file" name="cover_image" id="coverInput" accept="image/*">
+            <div class="upload-ico">🖼️</div>
+            <div class="upload-main-text">Cover photo upload karein</div>
+            <div class="upload-sub-text">Click karein ya yahan drop karein · JPG, PNG · Max 5MB</div>
+          </div>
+          <div class="preview-grid" id="coverPreview"></div>
+        </div>
+
+        <div class="fg">
+          <label>Gallery Photos (ek se zyada ho sakti hain)</label>
+          <div class="photo-upload-zone" id="galleryZone">
+            <input type="file" name="gallery_images" id="galleryInput" accept="image/*" multiple>
+            <div class="upload-ico">📸</div>
+            <div class="upload-main-text">Gallery photos upload karein</div>
+            <div class="upload-sub-text">Multiple select kar sakte hain · Max 5 photos</div>
+          </div>
+          <div class="preview-grid" id="galleryPreview"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CARD 5: Extra (fully optional, collapsed by default) ══ -->
+    <div class="al-card">
+      <div class="al-card-head collapsed" onclick="toggleCard(this)">
+        <div class="head-icon">✨</div>
+        <h3>Extra Jaankari</h3>
+        <span class="badge-opt">Optional</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="al-card-body hidden">
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Sthapna Varsh (Established Year)</label>
+            <input type="number" name="established_year"
+              placeholder="e.g. 2015"
+              min="1900" max="2025"
+              value="{{ post_data.established_year|default:'' }}">
+          </div>
+          <div class="fg">
+            <label>GST Number</label>
+            <input type="text" name="gst_number"
+              placeholder="Optional"
+              value="{{ post_data.gst_number|default:'' }}">
+          </div>
+        </div>
+
+        <div class="field-row two">
+          <div class="fg">
+            <label>Facebook Page</label>
+            <input type="url" name="facebook"
+              placeholder="https://facebook.com/yourpage"
+              value="{{ post_data.facebook|default:'' }}">
+          </div>
+          <div class="fg">
+            <label>Instagram</label>
+            <input type="url" name="instagram"
+              placeholder="https://instagram.com/yourprofile"
+              value="{{ post_data.instagram|default:'' }}">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ SUBMIT ══ -->
+    <div class="al-submit-area">
+      <div class="pending-note">
+        ⏳ <span>Aapki listing submit hone ke baad <strong>admin approve karega</strong> — uske baad automatically apni category mein show hogi. Zyada tar 24 ghante ke andar.</span>
+      </div>
+      <button type="submit" class="btn-submit-main" id="submitBtn">
+        <span id="submitText">🚀 Business Submit Karo</span>
+      </button>
+    </div>
+
+  </form>
+
+</div><!-- /al-wrap -->
+
+<script>
+/* ── TOGGLE CARDS ── */
+function toggleCard(head){
+  head.classList.toggle('collapsed');
+  const body = head.nextElementSibling;
+  body.classList.toggle('hidden');
+}
+
+/* ── CHAR COUNTER ── */
+function updateChar(inputId, counterId, max){
+  const val = document.getElementById(inputId).value.length;
+  const el  = document.getElementById(counterId);
+  el.textContent = val + ' / ' + max;
+  el.className = 'char-counter' + (val > max*0.9 ? (val >= max ? ' over' : ' warn') : '');
+}
+
+/* init counters */
+document.addEventListener('DOMContentLoaded', function(){
+  updateChar('titleInput','titleCount',200);
+  updateChar('descInput','descCount',2000);
+});
+
+/* ── PHOTO PREVIEW ── */
+function setupPhotoUpload(inputId, previewId, zoneId, multiple){
+  const input   = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  const zone    = document.getElementById(zoneId);
+  let files = [];
+
+  function renderPreviews(){
+    preview.innerHTML = '';
+    files.forEach(function(file, i){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        item.innerHTML = '<img src="'+e.target.result+'" alt="preview"><button class="del-btn" type="button" onclick="removeFile(\''+inputId+'\',\''+previewId+'\',\''+zoneId+'\','+i+')">✕</button>';
+        preview.appendChild(item);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  input.addEventListener('change', function(){
+    if(multiple){
+      const newFiles = Array.from(input.files).slice(0, 5 - files.length);
+      files = files.concat(newFiles).slice(0,5);
+    } else {
+      files = input.files.length ? [input.files[0]] : [];
+    }
+    renderPreviews();
+    rebuildFileList(input, files);
+    if(files.length > 0) showToast('📷 ' + files.length + ' photo'+(files.length>1?'s':'')+' selected', 'success');
+  });
+
+  zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', function(){ zone.classList.remove('dragover'); });
+  zone.addEventListener('drop', function(e){
+    e.preventDefault(); zone.classList.remove('dragover');
+    const dropped = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+    if(multiple){ files = files.concat(dropped).slice(0,5); } else { files = [dropped[0]]; }
+    renderPreviews();
+    rebuildFileList(input, files);
+  });
+
+  /* Store files array on element for removal */
+  input._files = files;
+  input._renderPreviews = renderPreviews;
+}
+
+function rebuildFileList(input, files){
+  /* DataTransfer trick to update file input */
+  const dt = new DataTransfer();
+  files.forEach(f => dt.items.add(f));
+  input.files = dt.files;
+  input._files = files;
+}
+
+function removeFile(inputId, previewId, zoneId, idx){
+  const input = document.getElementById(inputId);
+  const files = Array.from(input._files || input.files);
+  files.splice(idx,1);
+  rebuildFileList(input, files);
+  /* re-render */
+  const preview = document.getElementById(previewId);
+  preview.innerHTML = '';
+  files.forEach(function(file, i){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      item.innerHTML = '<img src="'+e.target.result+'" alt="preview"><button class="del-btn" type="button" onclick="removeFile(\''+inputId+'\',\''+previewId+'\',\''+zoneId+'\','+i+')">✕</button>';
+      preview.appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+setupPhotoUpload('coverInput',   'coverPreview',   'coverZone',   false);
+setupPhotoUpload('galleryInput', 'galleryPreview', 'galleryZone', true);
+
+/* ── FORM VALIDATION + SUBMIT ── */
+document.getElementById('mainForm').addEventListener('submit', function(e){
+  const title    = document.getElementById('titleInput').value.trim();
+  const cat      = document.getElementById('catSelect').value;
+  const desc     = document.getElementById('descInput').value.trim();
+  const phone    = document.querySelector('[name=phone]').value.trim();
+  const address  = document.querySelector('[name=address]').value.trim();
+
+  let errors = [];
+  if(!title)   errors.push('Business ka naam likhein');
+  if(!cat)     errors.push('Category chuniye');
+  if(!desc)    errors.push('Business ki jankari likhein');
+  if(!phone)   errors.push('Phone number daalna zaroori hai');
+  if(!address) errors.push('Address daalna zaroori hai');
+
+  if(errors.length){
+    e.preventDefault();
+    errors.forEach(function(msg){ showToast('⚠️ ' + msg, 'error'); });
+    /* Open required cards */
+    document.querySelectorAll('.al-card-head.collapsed').forEach(function(h){
+      h.classList.remove('collapsed');
+      h.nextElementSibling.classList.remove('hidden');
+    });
+    return;
+  }
+
+  /* Loading state */
+  const btn = document.getElementById('submitBtn');
+  const txt = document.getElementById('submitText');
+  btn.disabled = true;
+  txt.textContent = '⏳ Submit ho raha hai...';
+});
+
+/* ── TOAST ── */
+function showToast(msg, type){
+  type = type || 'success';
+  const wrap = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(function(){
+    t.style.transition = 'opacity .4s,transform .4s';
+    t.style.opacity    = '0';
+    t.style.transform  = 'translateX(36px)';
+    setTimeout(function(){ t.remove(); }, 400);
+  }, 3800);
+}
+
+/* Django messages */
+{% if messages %}
+document.addEventListener('DOMContentLoaded', function(){
+  {% for message in messages %}
+  showToast("{{ message }}", "{{ message.tags }}".includes('error') ? 'error' : 'success');
+  {% endfor %}
+});
+{% endif %}
+
+/* Re-render error state */
+{% if post_data %}
+document.addEventListener('DOMContentLoaded', function(){
+  showToast('⚠️ Kuch fields sahi se bharein', 'error');
+});
+{% endif %}
+</script>
+
+{% endblock %}

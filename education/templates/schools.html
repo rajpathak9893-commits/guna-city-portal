@@ -1,0 +1,25 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<h1>Schools</h1>
+
+{% for school in schools %}
+<div class="card">
+    {% if school.image %}
+        <img src="{{ school.image.url }}" width="250">
+    {% endif %}
+
+    <h2>{{ school.name }}</h2>
+
+    <p>{{ school.address }}</p>
+
+    <p>{{ school.contact }}</p>
+
+    <p>{{ school.school_type }}</p>
+
+    <p>{{ school.description }}</p>
+</div>
+{% endfor %}
+
+{% endblock %}

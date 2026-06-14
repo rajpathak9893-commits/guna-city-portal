@@ -1,0 +1,809 @@
+{% extends 'master.html' %}
+{% block title %}Vehicles – ApnaGuna Pro{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Satoshi:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --bg:          #FBF7F0;
+  --surface:     #FFFFFF;
+  --card:        #FFFFFF;
+  --border:      #EDE8DC;
+  --border-h:    #E8A020;
+
+  --saffron:     #E8820C;
+  --saffron-d:   #C96D00;
+  --saffron-l:   #FEF3E2;
+  --saffron-mid: #F59E2A;
+  --saffron-glow:rgba(232,130,12,0.15);
+
+  --ink:         #1A1208;
+  --ink-2:       #4A3F2F;
+  --ink-3:       #9A8F80;
+
+  --green:       #1A7A4A;
+  --green-dim:   #E6F5EE;
+  --blue:        #1A52A8;
+  --blue-dim:    #EAF0FB;
+  --red:         #C0392B;
+  --red-dim:     #FEECEB;
+  --violet:      #6730B8;
+  --violet-dim:  #F1ECFB;
+
+  --r:           16px;
+  --r-sm:        10px;
+  --r-pill:      100px;
+
+  --shadow-sm:   0 2px 10px rgba(26,18,8,0.06);
+  --shadow-md:   0 8px 32px rgba(26,18,8,0.10);
+  --shadow-lg:   0 20px 60px rgba(26,18,8,0.14);
+  --shadow-saf:  0 8px 28px rgba(232,130,12,0.22);
+
+  --font-d: 'Clash Display', sans-serif;
+  --font-b: 'Satoshi', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-b); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+/* ── TOPBAR ─────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  height: 64px;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand {
+  font-family: var(--font-d);
+  font-size: 19px; font-weight: 700;
+  color: var(--ink);
+  display: flex; align-items: center; gap: 10px;
+}
+.brand-logo {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-d));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: 0 3px 10px var(--saffron-glow);
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.count-tag {
+  font-size: 13px; font-weight: 600;
+  color: var(--saffron-d);
+  background: var(--saffron-l);
+  border: 1px solid rgba(232,130,12,0.22);
+  padding: 6px 14px; border-radius: var(--r-pill);
+}
+.btn-add {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-d));
+  color: #fff;
+  font-family: var(--font-d); font-size: 13.5px; font-weight: 600;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; text-decoration: none;
+  transition: opacity 0.18s, transform 0.15s, box-shadow 0.18s;
+  box-shadow: 0 4px 14px var(--saffron-glow);
+  letter-spacing: 0.1px;
+}
+.btn-add:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: var(--shadow-saf); }
+.btn-add:active { transform: scale(0.97); }
+
+/* ── HERO ───────────────────────────────── */
+.hero {
+  position: relative; height: 460px; overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+.hero-slides { position: absolute; inset: 0; }
+.hero-slide {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0; transition: opacity 1.2s ease;
+}
+.hero-slide.active { opacity: 1; animation: hZoom 7s ease-in-out forwards; }
+@keyframes hZoom { from { transform: scale(1.0); } to { transform: scale(1.07); } }
+
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(165deg, rgba(10,8,4,0.1) 0%, rgba(10,8,4,0.5) 50%, rgba(10,8,4,0.88) 100%);
+}
+.hero-tint {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to top, rgba(232,130,12,0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero-content {
+  position: relative; z-index: 3;
+  width: 100%; padding: 0 44px 44px;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.65);
+  margin-bottom: 14px;
+}
+.hero-eyebrow span {
+  display: block; width: 28px; height: 2px;
+  background: var(--saffron-mid); border-radius: 2px;
+}
+.hero-title {
+  font-family: var(--font-d);
+  font-size: clamp(38px, 5.5vw, 60px);
+  font-weight: 700; color: #fff;
+  line-height: 1.08; letter-spacing: -1px; margin-bottom: 12px;
+}
+.hero-title em {
+  font-style: italic;
+  background: linear-gradient(90deg, #FFCB5C, #FF9A1C);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-sub { font-size: 14.5px; color: rgba(255,255,255,0.55); font-weight: 400; }
+.hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 18px; }
+.hero-dots { display: flex; gap: 7px; }
+.hero-dot {
+  height: 3px; width: 20px; border-radius: 10px;
+  background: rgba(255,255,255,0.25); border: none; cursor: pointer;
+  transition: background 0.3s, width 0.3s; padding: 0;
+}
+.hero-dot.active { background: var(--saffron-mid); width: 38px; }
+
+/* ── SEARCH / FILTER BAR ────────────────── */
+.filter-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+.search-wrap {
+  flex: 1; min-width: 220px;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-wrap:focus-within {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 3px var(--saffron-glow);
+  background: #fff;
+}
+.search-wrap i { font-size: 14px; color: var(--ink-3); }
+.search-wrap input {
+  background: none; border: none; outline: none;
+  font-family: var(--font-b); font-size: 14px; color: var(--ink);
+  padding: 12px 0; width: 100%;
+}
+.search-wrap input::placeholder { color: var(--ink-3); }
+
+.fsel {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--font-b); font-size: 13.5px; color: var(--ink-2);
+  padding: 11px 36px 11px 14px;
+  outline: none; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='11' height='7' viewBox='0 0 11 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5.5 5.5L10 1' stroke='%239A8F80' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center;
+}
+.fsel:focus, .fsel:hover { border-color: var(--saffron); background-color: #fff; color: var(--ink); }
+option { background: #fff; }
+
+.results-pill {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--ink-3);
+  white-space: nowrap;
+  background: var(--saffron-l);
+  border: 1.5px solid rgba(232,130,12,0.22);
+  padding: 8px 16px; border-radius: var(--r-sm);
+}
+.results-pill strong { font-size: 15px; font-weight: 800; color: var(--saffron-d); }
+
+/* ── SECTION HEADER ─────────────────────── */
+.sec-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.sec-title {
+  font-family: var(--font-d);
+  font-size: 20px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-title::before {
+  content: '';
+  display: block; width: 4px; height: 22px;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, var(--saffron), var(--saffron-d));
+}
+.sec-see-all {
+  font-size: 13px; font-weight: 600; color: var(--saffron);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 5px;
+  transition: gap 0.18s;
+}
+.sec-see-all:hover { gap: 9px; }
+
+/* ── RECENT HORIZONTAL SCROLL ───────────── */
+.recent-section { padding: 32px 40px 0; }
+
+.recent-scroll-wrap { position: relative; }
+.recent-track {
+  display: flex; gap: 16px;
+  overflow-x: auto; padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.recent-track::-webkit-scrollbar { display: none; }
+
+/* Scroll arrows */
+.scroll-arrow {
+  position: absolute; top: 50%; transform: translateY(-60%);
+  width: 38px; height: 38px;
+  background: #fff; border: 1.5px solid var(--border);
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--ink-2);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.18s, color 0.18s, box-shadow 0.18s;
+  z-index: 5; border: none;
+}
+.scroll-arrow:hover { border-color: var(--saffron); color: var(--saffron); box-shadow: var(--shadow-saf); }
+.scroll-arrow.left { left: -18px; }
+.scroll-arrow.right { right: -18px; }
+
+/* RECENT MINI CARD */
+.rcard {
+  flex: 0 0 240px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  scroll-snap-align: start;
+  text-decoration: none; color: inherit;
+  display: block;
+  transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+  animation: fadeUp 0.4s ease both;
+}
+.rcard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-h);
+}
+.rcard-thumb {
+  height: 130px; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.rcard-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+.rcard:hover .rcard-thumb img { transform: scale(1.06); }
+.rcard-thumb-ph { font-size: 44px; }
+.rcard-new-badge {
+  position: absolute; top: 10px; left: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-d));
+  color: #fff; padding: 3px 10px; border-radius: 6px;
+}
+.rcard-body { padding: 13px 15px 15px; }
+.rcard-price {
+  font-family: var(--font-d);
+  font-size: 18px; font-weight: 700; color: var(--saffron-d);
+  margin-bottom: 4px; line-height: 1;
+}
+.rcard-title {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 8px;
+}
+.rcard-meta {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11.5px; color: var(--ink-3); font-weight: 500;
+}
+.rcard-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* ── ALL VEHICLES GRID ──────────────────── */
+.main-section { padding: 32px 40px 72px; }
+
+.veh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* ── MAIN CARD ──────────────────────────── */
+.veh-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: block; text-decoration: none; color: inherit;
+  transition: transform 0.24s ease, box-shadow 0.24s, border-color 0.24s;
+  box-shadow: var(--shadow-sm);
+  animation: fadeUp 0.45s ease both;
+}
+.veh-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-h);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.veh-card:nth-child(1)  { animation-delay: 0.04s; }
+.veh-card:nth-child(2)  { animation-delay: 0.09s; }
+.veh-card:nth-child(3)  { animation-delay: 0.14s; }
+.veh-card:nth-child(4)  { animation-delay: 0.19s; }
+.veh-card:nth-child(5)  { animation-delay: 0.24s; }
+.veh-card:nth-child(6)  { animation-delay: 0.29s; }
+
+/* THUMB */
+.veh-thumb {
+  position: relative; height: 210px;
+  background: var(--bg); overflow: hidden;
+}
+.veh-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.45s ease;
+  display: block;
+}
+.veh-card:hover .veh-thumb img { transform: scale(1.06); }
+.veh-thumb-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--saffron-l); font-size: 56px;
+}
+.veh-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(26,18,8,0.45) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* FUEL BADGE */
+.fuel-badge {
+  position: absolute; top: 12px; left: 12px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; padding: 4px 11px; border-radius: 7px;
+}
+.fuel-petrol   { background: #FEF0E7; color: #C96D00; border: 1px solid rgba(200,109,0,0.2); }
+.fuel-diesel   { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(26,82,168,0.2); }
+.fuel-electric { background: var(--green-dim); color: var(--green); border: 1px solid rgba(26,122,74,0.2); }
+.fuel-cng      { background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(103,48,184,0.2); }
+.fuel-default  { background: #F2F4F8; color: var(--ink-2); border: 1px solid var(--border); }
+
+.veh-year {
+  position: absolute; bottom: 12px; left: 12px;
+  background: rgba(255,255,255,0.85); color: var(--ink);
+  font-size: 11.5px; font-weight: 700;
+  padding: 4px 11px; border-radius: 7px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.veh-wish {
+  position: absolute; top: 11px; right: 11px;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; color: var(--ink-3);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.veh-wish:hover { color: var(--red); border-color: var(--red); background: var(--red-dim); }
+
+/* CARD BODY */
+.veh-body { padding: 18px 20px 20px; }
+.veh-price {
+  font-family: var(--font-d);
+  font-size: 26px; font-weight: 700; color: var(--saffron-d);
+  letter-spacing: -0.4px; margin-bottom: 5px; line-height: 1;
+}
+.veh-title {
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  margin-bottom: 6px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.1px;
+}
+.veh-loc {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12.5px; color: var(--ink-3); margin-bottom: 14px; font-weight: 500;
+}
+
+/* SPECS */
+.veh-specs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 16px; padding-bottom: 16px;
+  border-bottom: 1.5px solid var(--border);
+}
+.spec-tag {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600; color: var(--ink-2);
+  background: var(--bg); border: 1.5px solid var(--border);
+  padding: 5px 11px; border-radius: 8px;
+}
+.spec-tag i { font-size: 11px; color: var(--saffron); }
+
+/* FOOTER */
+.veh-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.veh-time {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11.5px; color: var(--ink-3); font-weight: 500;
+}
+.veh-time i { font-size: 11px; }
+.btn-view {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-d));
+  color: #fff;
+  font-family: var(--font-d); font-size: 13px; font-weight: 600;
+  text-decoration: none; border-radius: var(--r-sm);
+  border: none; cursor: pointer;
+  transition: opacity 0.18s, transform 0.15s, box-shadow 0.18s;
+  box-shadow: 0 3px 12px var(--saffron-glow);
+  white-space: nowrap; letter-spacing: 0.1px;
+}
+.btn-view:hover { opacity: 0.9; box-shadow: var(--shadow-saf); transform: translateY(-1px); }
+.btn-view:active { transform: scale(0.97); }
+
+/* ── EMPTY STATE ─────────────────────────── */
+.empty-state {
+  text-align: center; padding: 100px 20px; grid-column: 1/-1;
+}
+.empty-icon {
+  width: 80px; height: 80px; border-radius: 22px;
+  background: var(--saffron-l); border: 2px solid rgba(232,130,12,0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 22px; font-size: 36px;
+}
+.empty-state h3 {
+  font-family: var(--font-d); font-size: 22px; font-weight: 700;
+  color: var(--ink); margin-bottom: 8px;
+}
+.empty-state p { font-size: 14px; color: var(--ink-2); margin-bottom: 24px; }
+
+/* ── NO RESULTS (JS) ─────────────────────── */
+.no-results {
+  display: none; text-align: center;
+  padding: 60px 20px; grid-column: 1/-1;
+  color: var(--ink-3);
+}
+.no-results i { font-size: 40px; margin-bottom: 14px; display: block; }
+.no-results p { font-size: 15px; }
+
+/* ── SCROLLBAR ───────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #D5CEC2; border-radius: 10px; }
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 720px) {
+  .topbar { padding: 0 16px; }
+  .hero-content { padding: 0 20px 28px; }
+  .hero-title { font-size: 36px; }
+  .filter-bar { padding: 12px 16px; }
+  .recent-section, .main-section { padding-left: 16px; padding-right: 16px; }
+  .veh-grid { grid-template-columns: 1fr; gap: 14px; }
+  .scroll-arrow { display: none; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">🚘</div>
+    ApnaGuna Pro
+  </div>
+  <div class="topbar-right">
+    <span class="count-tag">{{ vehicles|length }} Vehicles</span>
+    <a href="/vehicles/add/" class="btn-add">
+      <i class="fa-solid fa-plus"></i> List a Vehicle
+    </a>
+  </div>
+</div>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-slides" id="heroSlides">
+    <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1400&q=80')"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-tint"></div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow"><span></span> ApnaGuna Pro · Vehicles</div>
+      <div class="hero-title">Find Your<br><em>Next Ride</em></div>
+      <div class="hero-sub">Cars, bikes &amp; more — buy &amp; sell near you</div>
+    </div>
+    <div class="hero-right">
+      <a href="/vehicles/add/" class="btn-add">
+        <i class="fa-solid fa-plus"></i> List a Vehicle
+      </a>
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FILTER BAR ── -->
+<div class="filter-bar">
+  <div class="search-wrap">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="vehSearch" placeholder="Search brand, model, city…" autocomplete="off">
+  </div>
+  <select class="fsel" id="filterFuel">
+    <option value="">All Fuel Types</option>
+    <option>Petrol</option>
+    <option>Diesel</option>
+    <option>Electric</option>
+    <option>CNG</option>
+  </select>
+  <select class="fsel" id="filterTransmission">
+    <option value="">All Transmission</option>
+    <option>Manual</option>
+    <option>Automatic</option>
+  </select>
+  <select class="fsel" id="sortBy">
+    <option value="default">Sort: Default</option>
+    <option value="price_low">Price: Low to High</option>
+    <option value="price_high">Price: High to Low</option>
+    <option value="newest">Newest First</option>
+  </select>
+  <div class="results-pill" id="resultsPill">
+    <strong id="resultsNum">{{ vehicles|length }}</strong>&nbsp;Vehicles
+  </div>
+</div>
+
+{% if vehicles %}
+
+<!-- ── RECENTLY ADDED ── -->
+<div class="recent-section">
+  <div class="sec-header">
+    <div class="sec-title">Recently Added</div>
+    <a href="#all-vehicles" class="sec-see-all">See all <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></a>
+  </div>
+  <div class="recent-scroll-wrap">
+    <button class="scroll-arrow left" id="scrollLeft" aria-label="Scroll left">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <div class="recent-track" id="recentTrack">
+      {% for vehicle in vehicles|slice:":10" %}
+      <a href="/vehicles/{{ vehicle.id }}/" class="rcard" style="animation-delay:{{ forloop.counter0 }}0ms">
+        <div class="rcard-thumb">
+          {% if vehicle.image %}
+            <img src="{{ vehicle.image.url }}" alt="{{ vehicle.title }}">
+          {% else %}
+            <div class="rcard-thumb-ph">🚘</div>
+          {% endif %}
+          {% if forloop.counter <= 3 %}
+            <div class="rcard-new-badge">New</div>
+          {% endif %}
+        </div>
+        <div class="rcard-body">
+          <div class="rcard-price">₹ {{ vehicle.price }}</div>
+          <div class="rcard-title">{{ vehicle.title }}</div>
+          <div class="rcard-meta">
+            <span><i class="fa-solid fa-location-dot" style="font-size:10px;color:var(--saffron)"></i> {{ vehicle.location }}</span>
+            {% if vehicle.fuel_type %}<span><i class="fa-solid fa-gas-pump" style="font-size:10px;color:var(--saffron)"></i> {{ vehicle.fuel_type }}</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <button class="scroll-arrow right" id="scrollRight" aria-label="Scroll right">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ── ALL VEHICLES ── -->
+<div class="main-section" id="all-vehicles">
+  <div class="sec-header">
+    <div class="sec-title">All Vehicles</div>
+  </div>
+  <div class="veh-grid" id="vehGrid">
+    {% for vehicle in vehicles %}
+    <a href="/vehicles/{{ vehicle.id }}/"
+       class="veh-card"
+       data-title="{{ vehicle.title|lower }}"
+       data-brand="{{ vehicle.brand|lower }}"
+       data-location="{{ vehicle.location|lower }}"
+       data-fuel="{{ vehicle.fuel_type|lower }}"
+       data-transmission="{{ vehicle.transmission|lower }}"
+       data-price="{{ vehicle.price }}"
+       data-idx="{{ forloop.counter0 }}"
+       style="animation-delay:{{ forloop.counter0 }}0ms">
+
+      <div class="veh-thumb">
+        {% if vehicle.image %}
+          <img src="{{ vehicle.image.url }}" alt="{{ vehicle.title }}" loading="lazy">
+        {% else %}
+          <div class="veh-thumb-ph">🚘</div>
+        {% endif %}
+        <div class="veh-overlay"></div>
+
+        <div class="fuel-badge
+          {% if vehicle.fuel_type == 'Petrol' %}fuel-petrol
+          {% elif vehicle.fuel_type == 'Diesel' %}fuel-diesel
+          {% elif vehicle.fuel_type == 'Electric' %}fuel-electric
+          {% elif vehicle.fuel_type == 'CNG' %}fuel-cng
+          {% else %}fuel-default{% endif %}">
+          {{ vehicle.fuel_type }}
+        </div>
+
+        {% if vehicle.year %}<div class="veh-year">{{ vehicle.year }}</div>{% endif %}
+
+        <button class="veh-wish" onclick="event.preventDefault()" aria-label="Save">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+      </div>
+
+      <div class="veh-body">
+        <div class="veh-price">₹ {{ vehicle.price }}</div>
+        <div class="veh-title">{{ vehicle.title }}</div>
+        <div class="veh-loc">
+          <i class="fa-solid fa-location-dot" style="font-size:11px;color:var(--saffron)"></i>
+          {{ vehicle.location }}
+        </div>
+
+        <div class="veh-specs">
+          {% if vehicle.brand %}
+          <div class="spec-tag"><i class="fa-solid fa-car-side"></i> {{ vehicle.brand }}</div>
+          {% endif %}
+          {% if vehicle.km_driven %}
+          <div class="spec-tag"><i class="fa-solid fa-gauge-high"></i> {{ vehicle.km_driven }} km</div>
+          {% endif %}
+          {% if vehicle.transmission %}
+          <div class="spec-tag"><i class="fa-solid fa-gears"></i> {{ vehicle.transmission }}</div>
+          {% endif %}
+          {% if vehicle.condition %}
+          <div class="spec-tag"><i class="fa-solid fa-circle-check"></i> {{ vehicle.condition }}</div>
+          {% endif %}
+        </div>
+
+        <div class="veh-footer">
+          <div class="veh-time">
+            <i class="fa-regular fa-clock"></i>
+            {% if vehicle.created_at %}{{ vehicle.created_at|timesince }} ago{% else %}Recently added{% endif %}
+          </div>
+          <span class="btn-view">
+            View Details <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i>
+          </span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+
+    <div class="no-results" id="noResults">
+      <i class="fa-solid fa-car-burst"></i>
+      <p>Koi vehicle nahi mili. Search badlo.</p>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<div class="main-section">
+  <div class="veh-grid">
+    <div class="empty-state">
+      <div class="empty-icon">🚗</div>
+      <h3>No Vehicles Listed Yet</h3>
+      <p>Pehle vehicle list karo apne area mein.</p>
+      <a href="/vehicles/add/" class="btn-add" style="display:inline-flex;">
+        <i class="fa-solid fa-plus"></i> List First Vehicle
+      </a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<script>
+(function () {
+  /* ── Hero slideshow ── */
+  const slides = document.querySelectorAll('.hero-slide');
+  const dotsEl = document.getElementById('heroDots');
+  let cur = 0;
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = n;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+  }
+  setInterval(() => goTo((cur + 1) % slides.length), 5000);
+
+  /* ── Horizontal scroll arrows ── */
+  const track = document.getElementById('recentTrack');
+  const btnL  = document.getElementById('scrollLeft');
+  const btnR  = document.getElementById('scrollRight');
+  if (track && btnL && btnR) {
+    btnL.addEventListener('click', () => track.scrollBy({ left: -270, behavior: 'smooth' }));
+    btnR.addEventListener('click', () => track.scrollBy({ left:  270, behavior: 'smooth' }));
+  }
+
+  /* ── Wishlist toggle ── */
+  document.querySelectorAll('.veh-wish').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const icon = this.querySelector('i');
+      icon.classList.toggle('fa-regular');
+      icon.classList.toggle('fa-solid');
+      this.style.color = icon.classList.contains('fa-solid') ? '#C0392B' : '';
+    });
+  });
+
+  /* ── Filter + Sort ── */
+  const searchEl = document.getElementById('vehSearch');
+  const fuelEl   = document.getElementById('filterFuel');
+  const transEl  = document.getElementById('filterTransmission');
+  const sortEl   = document.getElementById('sortBy');
+  const numEl    = document.getElementById('resultsNum');
+  const noRes    = document.getElementById('noResults');
+
+  function apply() {
+    const q     = (searchEl ? searchEl.value.trim().toLowerCase() : '');
+    const fuel  = fuelEl   ? fuelEl.value.toLowerCase()   : '';
+    const trans = transEl  ? transEl.value.toLowerCase()  : '';
+    const sort  = sortEl   ? sortEl.value                 : 'default';
+
+    const grid  = document.getElementById('vehGrid');
+    const cards = Array.from(grid ? grid.querySelectorAll('.veh-card') : []);
+    let vis = [];
+
+    cards.forEach(c => {
+      const matchQ = !q || [c.dataset.title, c.dataset.brand, c.dataset.location].some(v => v && v.includes(q));
+      const matchF = !fuel || (c.dataset.fuel && c.dataset.fuel.includes(fuel));
+      const matchT = !trans || (c.dataset.transmission && c.dataset.transmission.includes(trans));
+      if (matchQ && matchF && matchT) { vis.push(c); c.style.display = ''; }
+      else c.style.display = 'none';
+    });
+
+    /* Sort */
+    vis.sort((a, b) => {
+      const pa = parseFloat((a.dataset.price || '').replace(/[^\d.]/g, '')) || 0;
+      const pb = parseFloat((b.dataset.price || '').replace(/[^\d.]/g, '')) || 0;
+      const ia = parseInt(a.dataset.idx || '0');
+      const ib = parseInt(b.dataset.idx || '0');
+      if (sort === 'price_low')  return pa - pb;
+      if (sort === 'price_high') return pb - pa;
+      if (sort === 'newest')     return ia - ib;
+      return 0;
+    });
+    vis.forEach(c => grid.appendChild(c));
+
+    if (numEl) numEl.textContent = vis.length;
+    if (noRes) noRes.style.display = vis.length === 0 ? 'block' : 'none';
+  }
+
+  if (searchEl) searchEl.addEventListener('input', apply);
+  if (fuelEl)   fuelEl.addEventListener('change', apply);
+  if (transEl)  transEl.addEventListener('change', apply);
+  if (sortEl)   sortEl.addEventListener('change', apply);
+})();
+</script>
+
+{% endblock %}

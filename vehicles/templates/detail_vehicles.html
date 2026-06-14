@@ -1,0 +1,713 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %}{{ vehicle.title }} — ApnaGuna Pro{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F4F5F7;
+  color: #111827;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb-bar {
+  background: #fff;
+  border-bottom: 1px solid #E2E5EF;
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6B7280;
+}
+.breadcrumb-bar a { color: #2563EB; text-decoration: none; }
+.breadcrumb-bar a:hover { text-decoration: underline; }
+.breadcrumb-bar .sep { color: #D1D5DB; }
+.breadcrumb-bar .cur { color: #111827; font-weight: 500; }
+
+/* ── WRAPPER ── */
+.detail-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+/* ── TITLE CARD ── */
+.title-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.title-left h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.title-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 13px;
+  color: #6B7280;
+}
+.title-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.title-meta strong { color: #111827; font-weight: 600; }
+.title-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.icon-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: #F3F4F6;
+  border: 1px solid #E2E5EF;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px;
+  transition: all 0.2s;
+}
+.icon-btn:hover { background: #2563EB; border-color: #2563EB; color: #fff; }
+
+/* ── MAIN GRID ── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── GALLERY ── */
+.gallery-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.gallery-main {
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: #E8ECF5;
+  position: relative;
+}
+.gallery-main img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.gallery-main:hover img { transform: scale(1.03); }
+.gallery-no-img {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px; color: #93C5FD;
+  background: #EEF3FF;
+}
+.gallery-thumbs {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  overflow-x: auto;
+}
+.thumb {
+  width: 80px; height: 60px; flex-shrink: 0;
+  border-radius: 8px; overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.thumb.active { border-color: #2563EB; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── INFO CARD ── */
+.info-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.card-section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: #6B7280;
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-section-title::after {
+  content: ''; flex: 1; height: 1px; background: #F0F2F8;
+}
+
+/* specs grid */
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.spec-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E5EF;
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+.spec-box:hover { border-color: #93C5FD; }
+.spec-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: #9CA3AF; margin-bottom: 4px;
+}
+.spec-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px; font-weight: 700; color: #111827;
+}
+
+/* description */
+.desc-block {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #F0F2F8;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #4B5563;
+}
+
+/* ── SIDEBAR ── */
+.sidebar { display: flex; flex-direction: column; gap: 18px; }
+
+/* price card */
+.price-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 16px;
+  padding: 24px;
+}
+.price-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: #9CA3AF; margin-bottom: 6px;
+}
+.price-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 42px; font-weight: 800;
+  color: #16A34A;
+  line-height: 1; margin-bottom: 20px;
+}
+.divider { height: 1px; background: #F0F2F8; margin: 18px 0; }
+
+/* phone reveal */
+.phone-wrap { text-align: center; margin-bottom: 6px; }
+.phone-hidden, .phone-shown {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 700; color: #111827;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.phone-shown { display: none; }
+.btn-reveal {
+  background: none; border: none;
+  color: #2563EB; font-size: 12px; font-weight: 600;
+  cursor: pointer; text-decoration: underline;
+  margin-top: 4px; display: block; width: 100%; text-align: center;
+}
+
+/* buttons */
+.btn-whatsapp {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px;
+  background: #25D366; color: #fff;
+  border: none; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 10px;
+}
+.btn-whatsapp:hover { background: #22C55E; transform: translateY(-1px); }
+
+.btn-call {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px;
+  background: #2563EB; color: #fff;
+  border: none; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 10px;
+}
+.btn-call:hover { background: #1D4ED8; transform: translateY(-1px); }
+
+/* owner card */
+.owner-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+.owner-card h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: #9CA3AF; margin-bottom: 16px;
+}
+.owner-profile {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.owner-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #0EA5E9);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+}
+.owner-name { font-size: 15px; font-weight: 600; color: #111827; }
+.owner-since { font-size: 12px; color: #9CA3AF; margin-top: 2px; }
+.owner-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #F8FAFC;
+  font-size: 13.5px; color: #4B5563;
+}
+.owner-row:last-child { border-bottom: none; }
+.owner-row .ico { font-size: 16px; width: 22px; text-align: center; }
+
+/* meta card */
+.meta-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 16px;
+  padding: 16px 20px;
+}
+.meta-row {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: 8px 0;
+  border-bottom: 1px solid #F8FAFC;
+  font-size: 13px;
+}
+.meta-row:last-child { border-bottom: none; }
+.meta-row .k { color: #9CA3AF; }
+.meta-row .v { font-weight: 600; color: #111827; }
+
+/* safety card */
+.safety-card {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 16px;
+  padding: 16px 20px;
+}
+.safety-card h4 {
+  font-size: 13px; font-weight: 700;
+  color: #1D4ED8; margin-bottom: 10px;
+}
+.safety-tip {
+  font-size: 12.5px; color: #1E40AF;
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-bottom: 7px;
+}
+.safety-tip .dot {
+  width: 5px; height: 5px; background: #2563EB;
+  border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+}
+
+/* ── RELATED SECTION ── */
+.related-section { margin-top: 48px; }
+.related-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 800; color: #111827;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.related-title .line { flex: 1; height: 2px; background: #E2E5EF; }
+.related-title a {
+  font-size: 14px; font-weight: 500;
+  color: #2563EB; text-decoration: none; white-space: nowrap;
+}
+.related-title a:hover { text-decoration: underline; }
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.r-card {
+  background: #fff;
+  border: 1px solid #E2E5EF;
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none; color: inherit;
+  display: block;
+  transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+  animation: fadeUp 0.4s ease both;
+}
+.r-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(37,99,235,0.10);
+  border-color: #93C5FD;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.r-card:nth-child(1) { animation-delay: 0.05s; }
+.r-card:nth-child(2) { animation-delay: 0.12s; }
+.r-card:nth-child(3) { animation-delay: 0.19s; }
+.r-card-img {
+  aspect-ratio: 16/10; overflow: hidden;
+  background: #E8ECF5;
+}
+.r-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s;
+}
+.r-card:hover .r-card-img img { transform: scale(1.06); }
+.r-card-img-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; color: #93C5FD;
+}
+.r-card-body { padding: 14px 16px; }
+.r-card-price {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 800; color: #16A34A;
+  margin-bottom: 4px;
+}
+.r-card-title {
+  font-size: 14px; font-weight: 600; color: #111827;
+  margin-bottom: 8px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.r-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.r-tag {
+  background: #F3F4F9; border: 1px solid #E2E5EF;
+  border-radius: 6px; padding: 3px 8px;
+  font-size: 11px; font-weight: 500; color: #6B7280;
+}
+
+/* back to top */
+#backTop {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 42px; height: 42px; border-radius: 12px;
+  background: #2563EB; color: #fff;
+  border: none; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.35);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s; z-index: 99;
+}
+#backTop.show { opacity: 1; pointer-events: all; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .sidebar { flex-direction: row; flex-wrap: wrap; }
+  .sidebar > * { flex: 1 1 280px; }
+  .related-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .breadcrumb-bar { padding: 10px 16px; }
+  .detail-wrap { padding: 16px 14px 50px; }
+  .title-card { padding: 18px; }
+  .title-left h1 { font-size: 24px; }
+  .specs-grid { grid-template-columns: 1fr 1fr; }
+  .related-grid { grid-template-columns: 1fr; }
+  .price-value { font-size: 34px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <a href="/">🏠 Home</a>
+  <span class="sep">›</span>
+  <a href="/vehicles/">Vehicles</a>
+  <span class="sep">›</span>
+  <span class="cur">{{ vehicle.title|truncatechars:40 }}</span>
+</div>
+
+<div class="detail-wrap">
+
+  <!-- TITLE CARD -->
+  <div class="title-card">
+    <div class="title-left">
+      <h1>{{ vehicle.title }}</h1>
+      <div class="title-meta">
+        <span>📍 <strong>{{ vehicle.location }}</strong></span>
+        <span>📅 <strong>{{ vehicle.created_at|date:"d M Y" }}</strong></span>
+        <span>🕐 <strong>{{ vehicle.created_at|timesince }} ago</strong></span>
+        <span>🆔 <strong>#{{ vehicle.id }}</strong></span>
+      </div>
+    </div>
+    <div class="title-actions">
+      <button class="icon-btn" id="saveBtn" onclick="toggleSave(this)" title="Save">🤍</button>
+      <button class="icon-btn" onclick="shareVehicle()" title="Share">🔗</button>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- LEFT -->
+    <div>
+      <!-- GALLERY -->
+      <div class="gallery-card">
+        <div class="gallery-main">
+          {% if vehicle.image %}
+            <img id="mainImg" src="{{ vehicle.image.url }}" alt="{{ vehicle.title }}">
+          {% else %}
+            <div class="gallery-no-img">🚘</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- SPECS -->
+      <div class="info-card">
+        <div class="card-section-title">🔧 Vehicle Details</div>
+        <div class="specs-grid">
+          {% if vehicle.brand %}
+          <div class="spec-box">
+            <div class="spec-label">Brand</div>
+            <div class="spec-value">{{ vehicle.brand }}</div>
+          </div>
+          {% endif %}
+
+          {% if vehicle.model %}
+          <div class="spec-box">
+            <div class="spec-label">Model</div>
+            <div class="spec-value">{{ vehicle.model }}</div>
+          </div>
+          {% endif %}
+
+          {% if vehicle.year %}
+          <div class="spec-box">
+            <div class="spec-label">Year</div>
+            <div class="spec-value">{{ vehicle.year }}</div>
+          </div>
+          {% endif %}
+
+          {% if vehicle.location %}
+          <div class="spec-box">
+            <div class="spec-label">Location</div>
+            <div class="spec-value" style="font-size:16px">{{ vehicle.location }}</div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- DESCRIPTION -->
+        {% if vehicle.description %}
+        <div class="desc-block">
+          <strong style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#111827;display:block;margin-bottom:10px;">📝 Description</strong>
+          {{ vehicle.description|linebreaks }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- PRICE CARD -->
+      <div class="price-card">
+        <div class="price-label">Asking Price</div>
+        <div class="price-value">₹{{ vehicle.price }}</div>
+
+        <!-- Phone Reveal -->
+        {% if vehicle.phone %}
+        <div class="phone-wrap">
+          <div class="phone-hidden" id="phoneHidden">
+            📞 {{ vehicle.phone|slice:":6" }}XXXX
+          </div>
+          <div class="phone-shown" id="phoneShown">
+            📞 {{ vehicle.phone }}
+          </div>
+          <button class="btn-reveal" onclick="revealPhone()">Number dekhne ke liye tap karein</button>
+        </div>
+        <div class="divider"></div>
+        {% endif %}
+
+        <!-- WhatsApp -->
+        {% if vehicle.phone %}
+        <a href="https://wa.me/91{{ vehicle.phone }}?text=Hi!%20Mujhe%20aapki%20{{ vehicle.title|urlencode }}%20mein%20interest%20hai.%20Kya%20yeh%20available%20hai?"
+           class="btn-whatsapp" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M11.998 2C6.477 2 2 6.477 2 12c0 1.9.526 3.676 1.44 5.195L2 22l4.975-1.31A9.96 9.96 0 0011.998 22c5.522 0 10-4.477 10-10S17.52 2 11.998 2zm.002 18a7.96 7.96 0 01-4.073-1.116l-.29-.173-3.024.797.806-2.95-.19-.303A7.99 7.99 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+          </svg>
+          WhatsApp karo
+        </a>
+
+        <!-- Call -->
+        <a href="tel:{{ vehicle.phone }}" class="btn-call">
+          📞 Call Now
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- OWNER CARD -->
+      <div class="owner-card">
+        <h3>👤 Seller Details</h3>
+        <div class="owner-profile">
+          <div class="owner-avatar">
+            {{ vehicle.user.first_name|first|upper }}{{ vehicle.user.last_name|first|upper }}
+          </div>
+          <div>
+            <div class="owner-name">{{ vehicle.user.get_full_name|default:vehicle.user.username }}</div>
+            <div class="owner-since">Member since {{ vehicle.user.date_joined|date:"M Y" }}</div>
+          </div>
+        </div>
+
+        {% if vehicle.phone %}
+        <div class="owner-row">
+          <span class="ico">📞</span>
+          <strong>{{ vehicle.phone }}</strong>
+        </div>
+        {% endif %}
+
+        {% if vehicle.address %}
+        <div class="owner-row">
+          <span class="ico">📍</span>
+          <strong>{{ vehicle.address }}</strong>
+        </div>
+        {% endif %}
+
+        <div class="owner-row">
+          <span class="ico">🚘</span>
+          <strong>{{ vehicle.user.vehicle_set.count }} listing(s)</strong>
+        </div>
+      </div>
+
+      <!-- META CARD -->
+      <div class="meta-card">
+        <div class="meta-row">
+          <span class="k">🕐 Posted</span>
+          <span class="v">{{ vehicle.created_at|timesince }} ago</span>
+        </div>
+        <div class="meta-row">
+          <span class="k">📅 Date</span>
+          <span class="v">{{ vehicle.created_at|date:"d M Y" }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="k">🏷️ Brand</span>
+          <span class="v">{{ vehicle.brand }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="k">📍 Location</span>
+          <span class="v">{{ vehicle.location }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="k">📊 Status</span>
+          <span class="v" style="color:#16A34A;font-weight:700;">● Active</span>
+        </div>
+      </div>
+
+      <!-- SAFETY TIPS -->
+      <div class="safety-card">
+        <h4>🛡️ Safety Tips</h4>
+        <div class="safety-tip"><span class="dot"></span>RC aur insurance verify karein</div>
+        <div class="safety-tip"><span class="dot"></span>Advance payment kabhi na karein</div>
+        <div class="safety-tip"><span class="dot"></span>Public jagah pe milein</div>
+        <div class="safety-tip"><span class="dot"></span>Test drive zaroor lein</div>
+      </div>
+
+    </div>
+  </div><!-- /main-grid -->
+
+  <!-- RELATED VEHICLES -->
+  <div class="related-section">
+    <div class="related-title">
+      🔁 Similar Vehicles
+      <span class="line"></span>
+      <a href="/vehicles/">Sab dekhein →</a>
+    </div>
+
+    {% if related_vehicles %}
+    <div class="related-grid">
+      {% for rel in related_vehicles %}
+      <a href="/vehicles/{{ rel.id }}/" class="r-card">
+        <div class="r-card-img">
+          {% if rel.image %}
+            <img src="{{ rel.image.url }}" alt="{{ rel.title }}" loading="lazy">
+          {% else %}
+            <div class="r-card-img-ph">🚘</div>
+          {% endif %}
+        </div>
+        <div class="r-card-body">
+          <div class="r-card-price">₹{{ rel.price }}</div>
+          <div class="r-card-title">{{ rel.title }}</div>
+          <div class="r-tags">
+            {% if rel.year %}<span class="r-tag">{{ rel.year }}</span>{% endif %}
+            {% if rel.brand %}<span class="r-tag">{{ rel.brand }}</span>{% endif %}
+            {% if rel.location %}<span class="r-tag">📍 {{ rel.location }}</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div style="text-align:center;padding:40px;color:#9CA3AF;">
+      <div style="font-size:40px;margin-bottom:10px;">🚗</div>
+      <p>Is brand ka koi aur vehicle nahi hai abhi.</p>
+      <a href="/vehicles/" style="color:#2563EB;font-weight:600;margin-top:10px;display:inline-block;">Sab vehicles dekhein →</a>
+    </div>
+    {% endif %}
+  </div>
+
+</div><!-- /detail-wrap -->
+
+<!-- Back to Top -->
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function revealPhone() {
+    document.getElementById('phoneHidden').style.display = 'none';
+    document.getElementById('phoneShown').style.display = 'flex';
+    document.querySelector('.btn-reveal').style.display = 'none';
+  }
+
+  function toggleSave(btn) {
+    btn.classList.toggle('saved');
+    btn.innerHTML = btn.classList.contains('saved') ? '❤️' : '🤍';
+  }
+
+  function shareVehicle() {
+    if (navigator.share) {
+      navigator.share({
+        title: '{{ vehicle.title|escapejs }}',
+        text: '{{ vehicle.title|escapejs }} — ₹{{ vehicle.price }}',
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copy ho gaya! 📋');
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('backTop').classList.toggle('show', window.scrollY > 400);
+  });
+</script>
+{% endblock %}

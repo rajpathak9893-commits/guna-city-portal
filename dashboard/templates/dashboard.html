@@ -1,0 +1,370 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %}Dashboard — ApnaGuna{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron:       #FF6B00;
+    --saffron-light: #FF8C2A;
+    --saffron-glow:  rgba(255,107,0,0.12);
+    --gold:          #D4A017;
+    --ivory:         #FAF7F2;
+    --navy:          #0D1B3E;
+    --navy-soft:     #1A2D5A;
+    --slate:         #4A5568;
+    --border:        rgba(212,160,23,0.25);
+    --card-bg:       #FFFFFF;
+    --shadow-sm:     0 2px 12px rgba(13,27,62,0.08);
+    --shadow-md:     0 8px 32px rgba(13,27,62,0.13);
+    --shadow-hover:  0 16px 48px rgba(255,107,0,0.18);
+  }
+
+  /* ── Page ── */
+  .db-page {
+    min-height: 100vh;
+    background: var(--ivory);
+    padding: 0 0 80px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── Hero Banner ── */
+  .db-hero {
+    background: linear-gradient(130deg, var(--navy) 0%, var(--navy-soft) 60%, #1e3a6e 100%);
+    padding: 52px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .db-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,0,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .db-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--saffron), var(--gold), transparent);
+  }
+  .db-hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--saffron-light);
+    margin-bottom: 10px;
+  }
+  .db-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.15;
+    margin: 0 0 6px;
+  }
+  .db-hero h1 span {
+    color: var(--saffron);
+  }
+  .db-hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    margin: 0;
+  }
+
+  /* ── Stats Strip ── */
+  .db-stats {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .db-stat {
+    flex: 1;
+    background: var(--navy);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .db-stat-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .db-stat-icon.jobs-icon  { background: rgba(255,107,0,0.18); }
+  .db-stat-icon.prop-icon  { background: rgba(212,160,23,0.18); }
+  .db-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .db-stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ── Grid ── */
+  .db-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+    padding: 40px 40px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── Card ── */
+  .db-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .db-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-4px);
+  }
+
+  .db-card-header {
+    padding: 22px 26px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(212,160,23,0.12);
+  }
+  .db-card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .db-card-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .db-card-badge.jobs  { background: var(--saffron-glow); }
+  .db-card-badge.prop  { background: rgba(212,160,23,0.10); }
+  .db-card-title h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0;
+  }
+  .db-add-btn {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--saffron);
+    border: 1.5px solid var(--saffron);
+    background: transparent;
+    border-radius: 20px;
+    padding: 5px 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .db-add-btn:hover {
+    background: var(--saffron);
+    color: #fff;
+  }
+
+  /* ── Listing Items ── */
+  .db-card-body {
+    padding: 8px 0;
+  }
+  .db-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 26px;
+    border-bottom: 1px solid rgba(13,27,62,0.05);
+    transition: background 0.18s;
+  }
+  .db-item:last-child { border-bottom: none; }
+  .db-item:hover { background: rgba(255,107,0,0.04); }
+
+  .db-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .db-item-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .jobs-dot  { background: var(--saffron); }
+  .prop-dot  { background: var(--gold); }
+
+  .db-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .db-view-btn {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy-soft);
+    text-decoration: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(13,27,62,0.15);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .db-view-btn:hover {
+    border-color: var(--saffron);
+    color: var(--saffron);
+  }
+
+  /* ── Empty State ── */
+  .db-empty {
+    padding: 40px 26px;
+    text-align: center;
+  }
+  .db-empty-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    opacity: 0.4;
+  }
+  .db-empty p {
+    font-size: 14px;
+    color: var(--slate);
+    margin: 0 0 16px;
+  }
+  .db-empty-cta {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--saffron), var(--saffron-light));
+    padding: 9px 22px;
+    border-radius: 22px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .db-empty-cta:hover { opacity: 0.88; }
+
+  @media (max-width: 640px) {
+    .db-hero   { padding: 36px 20px 44px; }
+    .db-grid   { padding: 24px 16px 0; gap: 18px; }
+    .db-stats  { flex-direction: column; }
+    .db-stat   { padding: 14px 20px; }
+    .db-item-name { max-width: 130px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="db-page">
+
+  <!-- Hero -->
+  <div class="db-hero">
+    <p class="db-hero-eyebrow">ApnaGuna Pro</p>
+    <h1>My <span>Dashboard</span></h1>
+    <p class="db-hero-sub">manage your Listing</p>
+  </div>
+
+  <!-- Stats Strip -->
+  <div class="db-stats">
+    <div class="db-stat">
+      <div class="db-stat-icon jobs-icon">💼</div>
+      <div>
+        <div class="db-stat-num">{{ jobs|length }}</div>
+        <div class="db-stat-label">Jobs Posted</div>
+      </div>
+    </div>
+    <div class="db-stat">
+      <div class="db-stat-icon prop-icon">🏠</div>
+      <div>
+        <div class="db-stat-num">{{ properties|length }}</div>
+        <div class="db-stat-label">Properties Listed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="db-grid">
+
+    <!-- Jobs Card -->
+    <div class="db-card">
+      <div class="db-card-header">
+        <div class="db-card-title">
+          <div class="db-card-badge jobs">💼</div>
+          <h3>My Jobs</h3>
+        </div>
+        <a href="/jobs/add/" class="db-add-btn">+ Add New</a>
+      </div>
+      <div class="db-card-body">
+        {% for job in jobs %}
+          <div class="db-item">
+            <div class="db-item-left">
+              <div class="db-item-dot jobs-dot"></div>
+              <span class="db-item-name">{{ job.title }}</span>
+            </div>
+            <a href="/jobs/{{ job.id }}/" class="db-view-btn">View →</a>
+          </div>
+        {% empty %}
+          <div class="db-empty">
+            <div class="db-empty-icon">📭</div>
+            <p>Koi job are not Posted</p>
+            <a href="/jobs/add/" class="db-empty-cta">frist post a job</a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Properties Card -->
+    <div class="db-card">
+      <div class="db-card-header">
+        <div class="db-card-title">
+          <div class="db-card-badge prop">🏠</div>
+          <h3>My Properties</h3>
+        </div>
+        <a href="/properties/add/" class="db-add-btn">+ Add New</a>
+      </div>
+      <div class="db-card-body">
+        {% for property in properties %}
+          <div class="db-item">
+            <div class="db-item-left">
+              <div class="db-item-dot prop-dot"></div>
+              <span class="db-item-name">{{ property.title }}</span>
+            </div>
+            <a href="/properties/{{ property.id }}/" class="db-view-btn">View →</a>
+          </div>
+        {% empty %}
+          <div class="db-empty">
+            <div class="db-empty-icon">🏚️</div>
+            <p>Koi property are not Listing</p>
+            <a href="/properties/add/" class="db-empty-cta">frist listing properties</a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

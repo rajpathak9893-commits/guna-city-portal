@@ -1,0 +1,249 @@
+{% extends 'master.html' %}
+{% block title %}Add Job{% endblock %}
+
+{% block content %}
+
+<style>
+.add-wrap{
+    max-width:750px;
+    margin:40px auto;
+    background:#1e293b;
+    border-radius:20px;
+    padding:40px;
+    box-shadow:0 0 30px rgba(56,189,248,.1);
+    position:relative;
+    overflow:hidden;
+}
+
+.add-wrap::before{
+    content:"";
+    position:absolute;
+    top:-50%;
+    left:-50%;
+    width:200%;
+    height:200%;
+    background:radial-gradient(
+        circle,
+        rgba(56,189,248,.08),
+        transparent 60%
+    );
+    animation:glow 10s linear infinite;
+}
+
+@keyframes glow{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.add-wrap>*{
+    position:relative;
+    z-index:2;
+}
+
+.add-wrap h2{
+    font-size:26px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:8px;
+}
+
+.add-wrap p{
+    color:#94a3b8;
+    margin-bottom:25px;
+}
+
+.add-wrap label{
+    display:block;
+    color:#cbd5e1;
+    margin-top:15px;
+    margin-bottom:6px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.add-wrap input,
+.add-wrap select,
+.add-wrap textarea{
+    width:100%;
+    padding:14px;
+    background:#0f172a;
+    border:1px solid #334155;
+    border-radius:12px;
+    color:#fff;
+    outline:none;
+    transition:.3s;
+}
+
+.add-wrap input:focus,
+.add-wrap select:focus,
+.add-wrap textarea:focus{
+    border-color:#38bdf8;
+    box-shadow:0 0 15px rgba(56,189,248,.2);
+}
+
+.add-wrap textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+input[type="file"]{
+    padding:10px;
+    cursor:pointer;
+}
+
+.divider{
+    border:none;
+    border-top:1px solid #334155;
+    margin:25px 0;
+}
+
+.contact-note{
+    background:rgba(56,189,248,.08);
+    border:1px solid rgba(56,189,248,.2);
+    color:#7dd3fc;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:13px;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    margin-top:25px;
+    border:none;
+    border-radius:12px;
+    background:#38bdf8;
+    color:#0f172a;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.submit-btn:hover{
+    background:#7dd3fc;
+    transform:translateY(-2px);
+}
+</style>
+
+<div class="add-wrap">
+
+```
+<h2>💼 Post a New Job</h2>
+<p>Fill in the details below to publish your job listing.</p>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Job Title</label>
+    <input
+        type="text"
+        name="title"
+        placeholder="Python Developer"
+        required
+    >
+
+    <label>Company Name</label>
+    <input
+        type="text"
+        name="company"
+        placeholder="ABC Technologies Pvt Ltd"
+        required
+    >
+
+    <label>Job Type</label>
+    <!-- <select name="job_type" required> -->
+        <select name="job_type" required>
+    <option value="">Select Job Type</option>
+    <option value="Full-time">Full-time</option>
+    <option value="Part-time">Part-time</option>
+    <option value="Remote">Remote</option>
+    <option value="Contract">Contract</option>
+</select>
+    <!-- </select> -->
+
+    <label>Location</label>
+    <input
+        type="text"
+        name="location"
+        placeholder="Guna, Madhya Pradesh"
+        required
+    >
+
+    <label>Salary</label>
+    <input
+        type="text"
+        name="salary"
+        placeholder="₹25,000 - ₹40,000"
+        required
+    >
+    <label>🏅 Experience Required</label>
+<input
+    type="text"
+    name="experience"
+    placeholder="e.g. 2+ Years, Fresher OK"
+>
+
+<label>📅 Application Deadline</label>
+<input
+    type="date"
+    name="deadline"
+>
+
+    <label>Job Description</label>
+    <textarea
+        name="description"
+        placeholder="Enter complete job details..."
+        required
+    ></textarea>
+
+    <hr class="divider">
+
+    <div class="contact-note">
+        📋 Contact information is auto-filled from your profile.
+    </div>
+
+    <label>📞 Contact Number</label>
+    <input
+        type="tel"
+        name="phone"
+        value="{{ profile.phone }}"
+        placeholder="9876543210"
+    >
+
+    <label>💬 WhatsApp Number</label>
+    <input
+        type="tel"
+        name="whatsapp"
+        value="{{ profile.phone }}"
+        placeholder="9876543210"
+    >
+
+    <label>📍 Address</label>
+    <textarea
+        name="address"
+        placeholder="Enter address"
+    >{{ profile.address }}</textarea>
+
+    <label>🏢 Company Logo</label>
+    <input
+        type="file"
+        name="company_logo"
+        accept="image/*"
+    >
+
+    <button type="submit" class="submit-btn">
+        🚀 Post Job
+    </button>
+
+</form>
+```
+
+</div>
+
+{% endblock %}

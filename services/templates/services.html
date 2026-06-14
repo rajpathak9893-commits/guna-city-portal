@@ -1,0 +1,728 @@
+{% extends 'master.html' %}
+{% block title %}Services{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --bg:        #FDFAF4;
+  --white:     #FFFFFF;
+  --border:    #EDE8DC;
+  --border-h:  #E8650A;
+  --accent:    #E8650A;
+  --accent-d:  #CF5608;
+  --accent-lt: #FEF3E6;
+  --accent-br: #F6C48A;
+  --ink:       #1A1208;
+  --mid:       #7A6A50;
+  --muted:     #A8946A;
+  --tan:       #C5A87A;
+  --success:   #228B56;
+  --success-lt:#E6F4EE;
+  --font-d:    'Fraunces', serif;
+  --font-b:    'Plus Jakarta Sans', sans-serif;
+  --r:         16px;
+  --r-sm:      9px;
+  --r-pill:    100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); font-family: var(--font-b); color: var(--ink); min-height: 100vh; }
+
+/* ── TOPBAR ──────────────────────────────── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.brand {
+  font-family: var(--font-d);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.2px;
+}
+.brand-mark {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.nav-badge {
+  background: var(--accent-lt);
+  border: 1px solid var(--accent-br);
+  color: var(--accent-d);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+}
+.btn-add {
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-b);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: var(--r-sm);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, transform 0.15s;
+}
+.btn-add:hover { background: var(--accent-d); transform: translateY(-1px); }
+
+/* ── HERO ─────────────────────────────────── */
+.hero {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 32px 36px;
+  text-align: center;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-lt);
+  border: 1px solid var(--accent-br);
+  padding: 5px 16px;
+  border-radius: var(--r-pill);
+  margin-bottom: 18px;
+}
+.hero-title {
+  font-family: var(--font-d);
+  font-size: clamp(28px, 4.5vw, 44px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  margin-bottom: 12px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.hero-sub {
+  font-size: 15px;
+  color: var(--mid);
+  font-weight: 400;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+/* ── SEARCH ───────────────────────────────── */
+.search-container {
+  max-width: 540px;
+  margin: 0 auto 24px;
+  position: relative;
+}
+.search-icon {
+  position: absolute;
+  left: 18px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 15px;
+  pointer-events: none;
+}
+#searchInput {
+  width: 100%;
+  height: 52px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 0 52px 0 50px;
+  font-size: 15px;
+  font-family: var(--font-b);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#searchInput::placeholder { color: var(--muted); }
+#searchInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(232,101,10,0.1);
+}
+.search-clear {
+  position: absolute;
+  right: 16px; top: 50%;
+  transform: translateY(-50%);
+  background: var(--border);
+  border: none;
+  color: var(--mid);
+  cursor: pointer;
+  font-size: 12px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.search-clear:hover { background: var(--accent-br); color: var(--accent-d); }
+.search-clear.show { display: flex; }
+
+/* ── STATS ────────────────────────────────── */
+.stats-row {
+  display: inline-flex;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.stat-item {
+  padding: 16px 32px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--font-d);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+  line-height: 1;
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── TOOLBAR ──────────────────────────────── */
+.toolbar {
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ftab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--mid);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s;
+  font-family: var(--font-b);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ftab i { font-size: 12px; }
+.ftab:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-lt);
+}
+.ftab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.toolbar-right { display: flex; align-items: center; gap: 10px; }
+.result-count {
+  font-size: 13px;
+  color: var(--muted);
+}
+.result-count strong { color: var(--ink); font-weight: 700; }
+.sort-select {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  color: var(--ink);
+  font-size: 13px;
+  font-family: var(--font-b);
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.sort-select:focus { border-color: var(--accent); }
+
+/* ── GRID ─────────────────────────────────── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  padding: 0 32px 52px;
+}
+
+/* ── CARD ─────────────────────────────────── */
+.scard {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.2s, transform 0.22s cubic-bezier(.34,1.4,.64,1), box-shadow 0.2s;
+  animation: fadeUp 0.38s ease both;
+}
+.scard:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(232,101,10,0.12);
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Thumb */
+.scard-thumb {
+  height: 160px;
+  background: var(--accent-lt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.scard-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.scard-emoji { font-size: 54px; user-select: none; line-height: 1; }
+
+.badge-top {
+  position: absolute;
+  top: 10px; left: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+}
+.badge-featured {
+  background: rgba(232,101,10,0.12);
+  border: 1px solid rgba(232,101,10,0.3);
+  color: var(--accent-d);
+}
+.badge-new {
+  background: rgba(34,139,86,0.1);
+  border: 1px solid rgba(34,139,86,0.25);
+  color: #196642;
+}
+
+.avail-pill {
+  position: absolute;
+  bottom: 10px; right: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.avail-on {
+  background: rgba(34,139,86,0.1);
+  border: 1px solid rgba(34,139,86,0.25);
+  color: #196642;
+}
+.avail-off {
+  background: rgba(0,0,0,0.04);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.avail-dot { width: 6px; height: 6px; border-radius: 50%; }
+.avail-on .avail-dot { background: var(--success); }
+.avail-off .avail-dot { background: var(--muted); }
+
+/* Body */
+.scard-body { padding: 18px 20px 20px; }
+.scard-cat {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.scard-name {
+  font-family: var(--font-d);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+}
+.scard-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--mid);
+}
+.meta-row i {
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+  color: var(--tan);
+}
+.scard-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.price-label {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 2px;
+}
+.price-val {
+  font-family: var(--font-d);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.rating-block { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.stars { color: var(--accent); font-size: 13px; letter-spacing: 1px; }
+.rating-num { font-size: 12px; font-weight: 700; color: var(--mid); }
+
+/* ── EMPTY ────────────────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-state i { font-size: 44px; color: var(--border); display: block; margin-bottom: 16px; }
+.empty-state h3 {
+  font-family: var(--font-d);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mid);
+  margin-bottom: 6px;
+}
+.empty-state p { font-size: 14px; color: var(--muted); }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 768px) {
+  .topbar { padding: 0 16px; }
+  .hero { padding: 32px 16px 28px; }
+  .toolbar { padding: 16px; }
+  .services-grid { padding: 0 16px 36px; }
+  .hero-title { font-size: 26px; }
+  .stats-row { display: flex; width: calc(100% - 32px); margin: 0 16px; }
+  .stat-item { padding: 14px 0; flex: 1; }
+}
+</style>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+    ServiceHub
+  </div>
+  <div class="topbar-right">
+    <span class="nav-badge">{{ services|length }} Services</span>
+    <a href="{% url 'add_service' %}" class="btn-add">
+      <i class="fa-solid fa-plus"></i> Add Service
+    </a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">
+    <i class="fa-solid fa-circle" style="font-size:6px;"></i>
+    Professional Services
+  </div>
+  <h1 class="hero-title">
+    All the Experts<em> You Need,</em><br> in One Place 
+  </h1>
+  <p class="hero-sub">Verified professionals &middot; Fast response &middot; Guaranteed quality</p>
+
+  <!-- SEARCH -->
+  <div class="search-container">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Service, category, ya location dhundho&hellip;"
+      autocomplete="off"
+      oninput="handleSearch(this.value)"
+    >
+    <button class="search-clear" id="clearBtn" onclick="clearSearch()" title="Clear search">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-num" id="statCount">{{ services|length }}</div>
+      <div class="stat-lbl">Services</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.8&#9733;</div>
+      <div class="stat-lbl">Rating</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24h</div>
+      <div class="stat-lbl">Response</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="filter-tabs">
+    <a href="{% url 'services' %}"
+       class="ftab {% if not selected %}active{% endif %}"
+       data-cat="">
+      <i class="fa-solid fa-grip"></i> All
+    </a>
+    {% for val, label in categories %}
+    <a href="?category={{ val }}"
+       class="ftab {% if selected == val %}active{% endif %}"
+       data-cat="{{ val }}">
+      {{ label }}
+    </a>
+    {% endfor %}
+  </div>
+  <div class="toolbar-right">
+    <span class="result-count" id="resultCount">
+      <strong>{{ services|length }}</strong> results
+    </span>
+    <select class="sort-select" onchange="sortCards(this.value)">
+      <option value="default">Sort: Default</option>
+      <option value="rating">Top Rated</option>
+      <option value="price_low">Price: Low to High</option>
+      <option value="price_high">Price: High to Low</option>
+    </select>
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="services-grid" id="servicesGrid">
+  {% for s in services %}
+  <a href="{% url 'service_detail' s.id %}"
+     class="scard"
+     style="animation-delay: {{ forloop.counter0 }}00ms"
+     data-name="{{ s.name|lower }}"
+     data-cat="{{ s.category|lower }}"
+     data-loc="{{ s.location|lower }}"
+     data-price="{{ s.price }}"
+     data-rating="{{ s.rating|default:'0' }}">
+
+    <!-- THUMB -->
+    <div class="scard-thumb">
+      {% if s.photo %}
+        <img src="{{ s.photo.url }}" alt="{{ s.name }}">
+      {% else %}
+        <span class="scard-emoji">&#128295;</span>
+      {% endif %}
+
+      {% if s.rating >= 4.8 %}
+        <span class="badge-top badge-featured">
+          <i class="fa-solid fa-star" style="font-size:9px;"></i> Top Rated
+        </span>
+      {% elif forloop.counter <= 2 %}
+        <span class="badge-top badge-new">New</span>
+      {% endif %}
+
+      {% if s.availability %}
+        <div class="avail-pill avail-on">
+          <span class="avail-dot"></span> Available
+        </div>
+      {% else %}
+        <div class="avail-pill avail-off">
+          <span class="avail-dot"></span> Busy
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- BODY -->
+    <div class="scard-body">
+      <div class="scard-cat">
+        <i class="fa-solid fa-tag" style="font-size:10px;"></i>
+        {{ s.category }}
+      </div>
+      <div class="scard-name">{{ s.name }}</div>
+
+      <div class="scard-meta">
+        <div class="meta-row">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>{{ s.location }}</span>
+        </div>
+        {% if s.experience %}
+        <div class="meta-row">
+          <i class="fa-solid fa-medal"></i>
+          <span>{{ s.experience }} experience</span>
+        </div>
+        {% endif %}
+        {% if s.timing %}
+        <div class="meta-row">
+          <i class="fa-regular fa-clock"></i>
+          <span>{{ s.timing }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="scard-footer">
+        <div>
+          <div class="price-label">Starting from</div>
+          <div class="price-val">{{ s.price }}</div>
+        </div>
+        {% if s.rating %}
+        <div class="rating-block">
+          <div class="stars">
+            {% if s.rating >= 4.8 %}&#9733;&#9733;&#9733;&#9733;&#9733;
+            {% elif s.rating >= 4 %}&#9733;&#9733;&#9733;&#9733;&#9734;
+            {% else %}&#9733;&#9733;&#9733;&#9734;&#9734;
+            {% endif %}
+          </div>
+          <div class="rating-num">{{ s.rating }} / 5</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </a>
+
+  {% empty %}
+  <div class="empty-state">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <h3>👉 "There are currently no services available in this category."</h3>
+    <p>No services have been added yet. Start by creating the first listing.</p>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+(function () {
+  var query = '';
+  var sortVal = 'default';
+
+  function allCards() {
+    return Array.from(document.querySelectorAll('#servicesGrid .scard'));
+  }
+
+  function filterAndSort() {
+    var cards = allCards();
+    var visible = 0;
+
+    cards.forEach(function (card) {
+      var name = (card.dataset.name || '').toLowerCase();
+      var cat  = (card.dataset.cat  || '').toLowerCase();
+      var loc  = (card.dataset.loc  || '').toLowerCase();
+      var q = query.toLowerCase();
+      var match = !q || name.indexOf(q) > -1 || cat.indexOf(q) > -1 || loc.indexOf(q) > -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+
+    var grid = document.getElementById('servicesGrid');
+    var sortable = cards.filter(function (c) { return c.style.display !== 'none'; });
+
+    if (sortVal === 'rating') {
+      sortable.sort(function (a, b) { return (parseFloat(b.dataset.rating) || 0) - (parseFloat(a.dataset.rating) || 0); });
+    } else if (sortVal === 'price_low') {
+      sortable.sort(function (a, b) { return (parseFloat(a.dataset.price) || 0) - (parseFloat(b.dataset.price) || 0); });
+    } else if (sortVal === 'price_high') {
+      sortable.sort(function (a, b) { return (parseFloat(b.dataset.price) || 0) - (parseFloat(a.dataset.price) || 0); });
+    }
+
+    sortable.forEach(function (c) { grid.appendChild(c); });
+
+    var rc = document.getElementById('resultCount');
+    if (rc) rc.innerHTML = '<strong>' + visible + '</strong> results';
+    var sc = document.getElementById('statCount');
+    if (sc) sc.textContent = visible;
+
+    var empty = document.getElementById('jsEmptyState');
+    if (visible === 0) {
+      if (!empty) {
+        empty = document.createElement('div');
+        empty.id = 'jsEmptyState';
+        empty.className = 'empty-state';
+        empty.style.gridColumn = '1/-1';
+        empty.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i><h3>Koi service nahi mili</h3><p>&ldquo;' + query + '&rdquo; se match nahi hua. Alag keyword try karo.</p>';
+        grid.appendChild(empty);
+      }
+    } else {
+      if (empty) empty.remove();
+    }
+  }
+
+  window.handleSearch = function (val) {
+    query = val;
+    var btn = document.getElementById('clearBtn');
+    if (btn) btn.classList.toggle('show', val.length > 0);
+    filterAndSort();
+  };
+
+  window.clearSearch = function () {
+    var inp = document.getElementById('searchInput');
+    if (inp) inp.value = '';
+    query = '';
+    var btn = document.getElementById('clearBtn');
+    if (btn) btn.classList.remove('show');
+    filterAndSort();
+  };
+
+  window.sortCards = function (val) {
+    sortVal = val;
+    filterAndSort();
+  };
+})();
+</script>
+
+{% endblock %}
