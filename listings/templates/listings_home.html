@@ -531,7 +531,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--ivory); }
   <p>Restaurants, Hotels, Shops, Services — everything Guna has to offer.</p>
 
   <form method="GET" class="hero-search">
-    <input type="text" name="q" placeholder="Search restaurants, hotels, shops..." value="{{ request.GET.q|default:'' }}">
+    <input type="text" name="q" placeholder="Search restaurants, hotels, shops" value="{{ request.GET.q|default:'' }}">
     <button type="submit">🔍 Search</button>
   </form>
 
