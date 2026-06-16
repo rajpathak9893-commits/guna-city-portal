@@ -10,7 +10,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("/")
+            return redirect("login.html")
     return render(request, "register.html", {"form": form})
 
 
@@ -20,7 +20,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("/")
+            return redirect("index.html")
         # form invalid — errors template mein dikhenge
     return render(request, "login.html", {"form": form})
 
