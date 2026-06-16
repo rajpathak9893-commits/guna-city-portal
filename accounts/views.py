@@ -10,7 +10,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("home")   # ✅ urls.py mein name="home" hona chahiye
+            return redirect("index")   # ✅ urls.py mein name="home" hona chahiye
     return render(request, "register.html", {"form": form})
 
 def login_view(request):
@@ -19,7 +19,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("home")   # ✅ same
+            return redirect("index")   # ✅ same
     return render(request, "login.html", {"form": form})
 
 def logout_view(request):
